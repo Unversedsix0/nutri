@@ -128,16 +128,6 @@ export default function LoginView() {
             >
               <Iconify icon="eva:facebook-fill" color="#1877F2" />
             </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
-            </Button>
           </Stack>
 
           <Divider sx={{ my: 3 }}>
