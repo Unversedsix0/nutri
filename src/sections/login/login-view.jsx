@@ -36,11 +36,11 @@ export default function LoginView() {
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="email" label="E-mail" />
 
         <TextField
           name="password"
-          label="Password"
+          label="Senha"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -56,7 +56,7 @@ export default function LoginView() {
 
       <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
         <Link variant="subtitle2" underline="hover">
-          Forgot password?
+          Esqueceu a senha?
         </Link>
       </Stack>
 
@@ -68,7 +68,7 @@ export default function LoginView() {
         color="inherit"
         onClick={handleClick}
       >
-        Login
+        Entrar
       </LoadingButton>
     </>
   );
@@ -99,12 +99,12 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in to Minimal</Typography>
+          <Typography variant="h4">Acesse a sua conta</Typography>
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
-              Get started
+            Não tem uma conta?
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} underline="hover">
+              Registre-se
             </Link>
           </Typography>
 
@@ -142,7 +142,7 @@ export default function LoginView() {
 
           <Divider sx={{ my: 3 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              OR
+              Ou
             </Typography>
           </Divider>
 
