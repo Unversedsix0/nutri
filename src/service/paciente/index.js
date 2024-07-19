@@ -1,6 +1,6 @@
 import { api } from '../api';
 
-const ROTA = 'paciente';
+const ROTA = 'Paciente';
 
 const getAll = async () => {
   const { data } = await api.from(ROTA).select('*');
