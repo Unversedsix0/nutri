@@ -1,8 +1,11 @@
 import { faker } from '@faker-js/faker';
+import { useState, useEffect } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
+
+import { PacienteService } from 'src/service/paciente';
 
 import Iconify from 'src/components/iconify';
 
@@ -19,10 +22,21 @@ import AppConversionRates from '../app-conversion-rates';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+  const [paciente, setPaciente] = useState([]);
+
+  const fetchPaciente = async () => {
+    const response = await PacienteService.getAll();
+    setPaciente(response);
+  }
+
+  useEffect(()=>{
+    fetchPaciente()
+  },[])
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Hi, Welcome back 👋
+        Hi,👋
       </Typography>
 
       <Grid container spacing={3}>
