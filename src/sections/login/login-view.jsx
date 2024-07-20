@@ -39,7 +39,7 @@ export default function LoginView() {
   };
   
   const loginGit = async() => {
-    await api.auth.signIn({
+    await api.auth.signInWithOAuth({
       provider: "github",
     });
   };
