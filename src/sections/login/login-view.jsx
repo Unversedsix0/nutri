@@ -12,6 +12,9 @@ import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
+import {api} from 'src/service/api';
+
+
 
 import { useRouter } from 'src/routes/hooks';
 
@@ -23,15 +26,25 @@ import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
+
+  
   const theme = useTheme();
-
+  
   const router = useRouter();
-
+  
   const [showPassword, setShowPassword] = useState(false);
-
+  
   const handleClick = () => {
     router.push('/dashboard');
   };
+  
+  const loginGit = async() => {
+    await api.auth.signIn({
+      provider: "github",
+    });
+  };
+  
+
 
   const renderForm = (
     <>
@@ -127,6 +140,17 @@ export default function LoginView() {
               sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
             >
               <Iconify icon="eva:facebook-fill" color="#1877F2" />
+            </Button>
+
+            <Button
+              onClick={loginGit}
+              fullWidth
+              size="large"
+              color="inherit"
+              variant="outlined"
+              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+            >
+              <Iconify icon="eva:github-fill" color="#000" />
             </Button>
           </Stack>
 
