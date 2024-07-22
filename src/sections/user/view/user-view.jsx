@@ -16,6 +16,7 @@ import FormControl from '@mui/material/FormControl'; // Importação do FormCont
 import InputLabel from '@mui/material/InputLabel'; // Importação do InputLabel
 import Select from '@mui/material/Select'; // Importação do Select
 import MenuItem from '@mui/material/MenuItem'; // Importação do MenuItem
+import InputMask from 'react-input-mask'; // Importação do InputMask
 
 import { users } from 'src/_mock/user';
 
@@ -32,27 +33,27 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // Definindo o estilo do modal
 const style = {
   position: 'absolute',
-  top: '50%',
+  top: '2%',
   left: '50%',
-  transform: 'translate(-50%, -50%)',
+  transform: 'translate(-50%, 0%)',
   width: 600,
   bgcolor: 'background.paper',
-  boxShadow: 24,
+  boxShadow: 2,
   p: 4,
+  borderRadius: 2,
 };
 
 export default function UserPage() {
   const [open, setOpen] = useState(false);  // Estado para controle do modal
-
-  const handleOpen = () => setOpen(true);   // Função para abrir o modal
-  const handleClose = () => setOpen(false); // Função para fechar o modal
-
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleOpen = () => setOpen(true);   // Função para abrir o modal
+  const handleClose = () => setOpen(false); // Função para fechar o modal
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -185,7 +186,6 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
-
       {/* Modal */}
       <Modal
         open={open}
@@ -203,79 +203,134 @@ export default function UserPage() {
               margin="normal"
               label="Nome Completo"
               variant="outlined"
+              required
             />
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <FormControl fullWidth margin="normal" variant="outlined">
+                <InputLabel htmlFor="cpf">CPF</InputLabel>
+                <InputMask mask="999.999.999-99" maskPlaceholder={null}>
+                  {(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      id="cpf"
+                      variant="outlined"
+                      label="CPF"
+                      required
+                      InputLabelProps={{ shrink: true }} // Isso garante que o rótulo se mova para cima quando o campo está em uso
+                    />
+                  )}
+                </InputMask>
+              </FormControl>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Data de Nascimento"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                variant="outlined"
+                required
+              />
+            </Stack>
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <FormControl fullWidth margin="normal" variant="outlined" required>
+                <InputLabel>Sexo</InputLabel>
+                <Select
+                  label="Sexo"
+                  defaultValue=""
+                  required
+                  displayEmpty
+                >
+                  <MenuItem value="male">Masculino</MenuItem>
+                  <MenuItem value="female">Feminino</MenuItem>
+                  <MenuItem value="other">Outro</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth margin="normal" variant="outlined" required>
+                <InputLabel>Estado Civil</InputLabel>
+                <Select
+                  label="Estado Civil"
+                  defaultValue=""
+                  required
+                  displayEmpty
+                >
+                  <MenuItem value="solteiro">Solteiro</MenuItem>
+                  <MenuItem value="casado">Casado</MenuItem>
+                  <MenuItem value="divorciado">Divorciado</MenuItem>
+                  <MenuItem value="viuvo">Viúvo</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
             <TextField
               fullWidth
               margin="normal"
-              label="Data de Nascimento"
-              type="date"
-              InputLabelProps={{ shrink: true }}
+              label="E-mail"
               variant="outlined"
+              required
+              sx={{ mt: 2 }}
             />
-            <FormControl fullWidth margin="normal" variant="outlined">
-              <InputLabel>Sexo</InputLabel>
-              <Select
-                label="Sexo"
-                defaultValue=""
-              >
-                <MenuItem value="male">Masculino</MenuItem>
-                <MenuItem value="female">Feminino</MenuItem>
-                <MenuItem value="other">Outro</MenuItem>
-              </Select>
-            </FormControl>
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <FormControl fullWidth margin="normal" variant="outlined">
+                <InputLabel htmlFor="cep">CEP</InputLabel>
+                <InputMask mask="99999-999" maskPlaceholder={null}>
+                  {(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      id="cep"
+                      variant="outlined"
+                      label="CEP"
+                      required
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  )}
+                </InputMask>
+              </FormControl>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Endereço"
+                variant="outlined"
+                required
+              />
+            </Stack>
+            {/* Campos Bairro e Número abaixo de CEP e Endereço */}
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Bairro"
+                variant="outlined"
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Número"
+                variant="outlined"
+                required
+                type="number" // Garante que somente números podem ser inseridos
+              />
+            </Stack>
             <TextField
               fullWidth
               margin="normal"
               label="Local de Atendimento"
               variant="outlined"
+              required
+              sx={{ mt: 2 }}
             />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Telefone Fixo"
-              type="tel"
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Celular (WhatsApp)"
-              type="tel"
-              variant="outlined"
-            />
-            <FormControl fullWidth margin="normal" variant="outlined">
-              <InputLabel>Estado Civil</InputLabel>
-              <Select
-                label="Estado Civil"
-                defaultValue=""
+            {/* Botão Salvar */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ backgroundColor: '#B0E0E6', color: '#000', '&:hover': { backgroundColor: '#ADD8E6' } }}
+                onClick={() => {
+                  handleClose(); // Fecha o modal
+                }}
               >
-                <MenuItem value="single">Solteiro</MenuItem>
-                <MenuItem value="married">Casado</MenuItem>
-                <MenuItem value="divorced">Divorciado</MenuItem>
-                <MenuItem value="widowed">Viúvo</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Ocupação"
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="CPF"
-              type="text"
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Observação"
-              multiline
-              rows={4}
-              variant="outlined"
-            />
+                Salvar
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Modal>
