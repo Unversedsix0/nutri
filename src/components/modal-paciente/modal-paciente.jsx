@@ -25,7 +25,11 @@ const style = {
   boxShadow: 2,
   p: 4,
   borderRadius: 2,
+  '@media (max-width:600px)': { 
+    width: '95%', 
+  },
 };
+
 
 export default function ModalPaciente(props) {
   const {open, handleClose} = props;
@@ -155,14 +159,6 @@ export default function ModalPaciente(props) {
                 type="number" // Garante que somente números podem ser inseridos
               />
             </Stack>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Local de Atendimento"
-              variant="outlined"
-              required
-              sx={{ mt: 2 }}
-            />
             {/* Botão Salvar */}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
               <Button
