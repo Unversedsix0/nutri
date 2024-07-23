@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import {api} from 'src/service/api';
-
 import { account } from 'src/_mock/account';
 
 // ----------------------------------------------------------------------
