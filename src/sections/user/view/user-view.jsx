@@ -170,7 +170,9 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
       <ModalPaciente open = {open} handleClose={handleClose}/>
+
     </Container>
   );
 }
