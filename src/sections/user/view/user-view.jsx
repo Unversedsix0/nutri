@@ -207,7 +207,7 @@ export default function UserPage() {
             />
             <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
               <FormControl fullWidth margin="normal" variant="outlined">
-                <InputLabel htmlFor="cpf"></InputLabel>
+                <InputLabel htmlFor="cpf">.</InputLabel>
                 <InputMask mask="999.999.999-99" maskPlaceholder={null}>
                   {(inputProps) => (
                     <TextField
@@ -271,7 +271,7 @@ export default function UserPage() {
             />
             <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
               <FormControl fullWidth margin="normal" variant="outlined">
-                <InputLabel htmlFor="cep"></InputLabel>
+                <InputLabel htmlFor="cep">.</InputLabel>
                 <InputMask mask="99999-999" maskPlaceholder={null}>
                   {(inputProps) => (
                     <TextField

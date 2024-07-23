@@ -9,6 +9,8 @@ import { PacienteService } from 'src/service/paciente';
 
 import Iconify from 'src/components/iconify';
 
+import { api } from "src/service/api";
+
 import AppTasks from '../app-tasks';
 import AppNewsUpdate from '../app-news-update';
 import AppOrderTimeline from '../app-order-timeline';
@@ -29,9 +31,27 @@ export default function AppView() {
     setPaciente(response);
   }
 
-  useEffect(()=>{
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
     fetchPaciente()
-  },[])
+    const session = api.auth.session();
+    setUser(session?.user);
+    const { data: authListener } = api.auth.onAuthStateChange((event) => {
+      switch (event) {
+        case "LOGADO":
+          setUser(session.user)
+          break;
+        case "DESLOGADO":
+          setUser(null)
+          break;
+        default:
+      }
+    });
+    return () => {
+      authListener.unsubscribe();
+    }
+  }, [])
 
   return (
     <Container maxWidth="xl">
