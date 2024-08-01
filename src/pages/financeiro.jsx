@@ -1,17 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 
-import { BlogView } from 'src/sections/blog/view';
+import { FinanView } from 'src/sections/financeiro/view';
 
 // ----------------------------------------------------------------------
 
-export default function BlogPage() {
+export default function FinanPage() {
   return (
     <>
       <Helmet>
         <title> Blog | Minimal UI </title>
       </Helmet>
 
-      <BlogView />
+      <FinanView />
     </>
   );
 }

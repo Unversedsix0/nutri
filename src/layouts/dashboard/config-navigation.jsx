@@ -14,12 +14,12 @@ const navConfig = [
   },
   {
     title: 'Pacientes',
-    path: '/user',
+    path: '/paciente',
     icon: icon('ic_user'),
   },
   {
-    title: 'blog',
-    path: '/blog',
+    title: 'Financeiro',
+    path: '/financeiro',
     icon: icon('ic_blog'),
   },
 

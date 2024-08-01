@@ -1,1 +1,1 @@
-export { default as UserView } from './user-view';
+export { default as PacienteView } from './paciente-view';

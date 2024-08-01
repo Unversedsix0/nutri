@@ -27,7 +27,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // Definindo o estilo do modal
 
 
-export default function UserPage() {
+export default function PacientePage() {
   const [open, setOpen] = useState(false);  // Estado para controle do modal
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
