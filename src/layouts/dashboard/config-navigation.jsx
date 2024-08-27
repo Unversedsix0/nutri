@@ -18,12 +18,16 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   {
+    title: 'Agenda',
+    path: '/agenda',
+    icon: icon('ic_blog'),
+  },
+  {
     title: 'Financeiro',
     path: '/financeiro',
     icon: icon('ic_blog'),
   },
 
- 
 ];
 
 export default navConfig;
