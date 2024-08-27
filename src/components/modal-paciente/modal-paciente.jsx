@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react';
+// eslint-disable-next-line import/no-duplicates
+import React,{ useState } from 'react';
 import InputMask from 'react-input-mask';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -31,14 +32,14 @@ const style = {
 };
 
 export default function ModalPaciente(props) {
-  const { open, handleClose } = props;
+  const { open, handleClose, parentToChild} = props;
   const { control, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
     console.log('Dados do formulário:', data);
-
-    
+    parentToChild(data)
   };
+ 
 
   return (
     <Modal

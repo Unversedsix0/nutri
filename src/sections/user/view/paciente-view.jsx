@@ -11,8 +11,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination'; // Importação do TextField
 
-import { users } from 'src/_mock/user';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import ModalPaciente from 'src/components/modal-paciente';
@@ -34,7 +32,15 @@ export default function PacientePage() {
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
+
+  const [users, setUsers] = useState([{nome:'Gabriel', company:'UNITAU', isVerified:true, status:'active'}]);
+
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+   const parentToChild = (dataFormulario) => {
+    console.log('estou aqui...')
+    setUsers([...users, dataFormulario]);
+  }
 
   const handleOpen = () => setOpen(true);   // Função para abrir o modal
   const handleClose = () => setOpen(false); // Função para fechar o modal
@@ -126,7 +132,6 @@ export default function PacientePage() {
                 headLabel={[
                   { id: 'name', label: 'Nome' },
                   { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
                   { id: 'isVerified', label: 'Débito', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
@@ -138,8 +143,7 @@ export default function PacientePage() {
                   .map((row) => (
                     <UserTableRow
                       key={row.id}
-                      name={row.name}
-                      role={row.role}
+                      name={row.nome}
                       status={row.status}
                       company={row.company}
                       avatarUrl={row.avatarUrl}
@@ -171,7 +175,7 @@ export default function PacientePage() {
         />
       </Card>
 
-      <ModalPaciente open = {open} handleClose={handleClose}/>
+      <ModalPaciente open = {open} handleClose={handleClose} parentToChild={parentToChild} />
 
     </Container>
   );

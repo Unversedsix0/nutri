@@ -21,7 +21,6 @@ export default function UserTableRow({
   name,
   avatarUrl,
   company,
-  role,
   isVerified,
   status,
   handleClick,
@@ -53,8 +52,6 @@ export default function UserTableRow({
         </TableCell>
 
         <TableCell>{company}</TableCell>
-
-        <TableCell>{role}</TableCell>
 
         <TableCell align="center">{isVerified ? 'Sim' : 'Não'}</TableCell>
 
@@ -99,7 +96,6 @@ UserTableRow.propTypes = {
   handleClick: PropTypes.func,
   isVerified: PropTypes.any,
   name: PropTypes.any,
-  role: PropTypes.any,
   selected: PropTypes.any,
   status: PropTypes.string,
 };
