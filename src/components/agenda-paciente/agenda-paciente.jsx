@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Typography, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, IconButton, Paper } from '@mui/material';
+import { format, addDays, parseISO, addMonths, subMonths, endOfWeek, isSameDay, endOfMonth, startOfWeek, isSameMonth, startOfMonth } from 'date-fns';
+
+import { Grid, Paper, Button, Dialog, Container, TextField, Typography, IconButton, DialogTitle, DialogActions, DialogContent } from '@mui/material';
+
 import Iconify from 'src/components/iconify';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, parseISO } from 'date-fns';
 
 const PlannerMensal = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -17,9 +19,6 @@ const PlannerMensal = () => {
     taskNotes: ''
   });
 
-  useEffect(() => {
-    loadTasks();
-  }, [currentMonth]);
 
   const changeMonth = (offset) => {
     setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
@@ -114,7 +113,7 @@ const PlannerMensal = () => {
   };
 
   const renderDays = () => {
-    const days = [];
+    const days = ['Segunda'];
     const startDate = startOfWeek(startOfMonth(currentMonth));
     const endDate = endOfWeek(endOfMonth(currentMonth));
 
@@ -129,13 +128,15 @@ const PlannerMensal = () => {
       days.push(
         <Grid item xs={1} key={formattedDate}>
           <Paper
-            variant={isCurrentMonth ? 'outlined' : 'elevation'}
-            elevation={isToday ? 4 : 1}
+            variant= 'outlined' 
+           
             sx={{ padding: 2, backgroundColor: isToday ? '#f0f0f0' : 'inherit', cursor: 'pointer' }}
+            // eslint-disable-next-line no-loop-func
             onClick={() => openModal(null, day)}
           >
             <Typography variant="h6">{format(day, 'd')}</Typography>
             {plannerData[monthKey] && plannerData[monthKey][day.getDate()] &&
+              // eslint-disable-next-line no-loop-func
               plannerData[monthKey][day.getDate()].map((task, index) => (
                 <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
                   <Typography variant="subtitle2">{task.time}</Typography>
