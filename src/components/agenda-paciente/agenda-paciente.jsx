@@ -113,7 +113,7 @@ const PlannerMensal = () => {
   };
 
   const renderDays = () => {
-    const days = ['Segunda'];
+    const days = [];
     const startDate = startOfWeek(startOfMonth(currentMonth));
     const endDate = endOfWeek(endOfMonth(currentMonth));
 
@@ -126,7 +126,7 @@ const PlannerMensal = () => {
       const isToday = isSameDay(day, new Date());
 
       days.push(
-        <Grid item xs={1} key={formattedDate}>
+        <Grid item xs={1.6} key={formattedDate}>
           <Paper
             variant= 'outlined' 
            
@@ -162,7 +162,7 @@ const PlannerMensal = () => {
         <Typography variant="h5">{format(currentMonth, 'MMMM yyyy')}</Typography>
         <Button endIcon={<Iconify icon="eva:plus-fill"/>} onClick={() => changeMonth(1)}>Próximo</Button>
       </Grid>
-      <Grid container spacing={1} sx={{ marginTop: 2 }}>
+      <Grid container columnSpacing={19} sx={{marginTop: 2}}>
         {['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'].map((day) => (
           <Grid item xs={1} key={day}>
             <Typography variant="subtitle1" align="center">{day}</Typography>
@@ -186,7 +186,7 @@ const PlannerMensal = () => {
             required
           />
           <TextField
-            label="Data"
+            label=""
             name="taskDate"
             type="date"
             value={formData.taskDate}
@@ -196,7 +196,7 @@ const PlannerMensal = () => {
             required
           />
           <TextField
-            label="Hora"
+            label=""
             name="taskTime"
             type="time"
             value={formData.taskTime}
