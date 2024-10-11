@@ -48,5 +48,6 @@ export const EnderecoService = {
   getByID,
   getByIDPaciente,
   getByCEP,
-  getByRua
+  getByRua,
+  insertData
 };
