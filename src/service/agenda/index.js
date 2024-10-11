@@ -23,10 +23,25 @@ const getByData = async(dataConsulta) =>{
   return data;
 }
 
+const insertData = async (agendamento) => {
+  const { data } = await api.from(ROTA).insert([
+    {
+      id_consultorio: agendamento.id_consultorio,
+      id_paciente: agendamento.id_paciente,
+      data: agendamento.data,
+      hora: agendamento.hora,
+      descricao: agendamento.descricao,
+      tarefa: agendamento.tarefa
+    },
+  ]);
+  console.log('insertData - data', data);
+};
+
 
 export const AgendaService = {
   getAll,
   getByID,
   getByIDPaciente,
-  getByData
+  getByData,
+  insertData
 };

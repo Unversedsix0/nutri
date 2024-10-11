@@ -28,6 +28,20 @@ const getByRua = async (rua) => {
   return data;
 };
 
+const insertData = async (endereco) => {
+  const { data } = await api.from(ROTA).insert([
+    {
+      cep: endereco.cep,
+      logradouro: endereco.logradouro,
+      numero: endereco.numero,
+      cidade: endereco.cidade,
+      uf: endereco.uf,
+      complemento: endereco.complemento
+    },
+  ]);
+  console.log('insertData - data', data);
+};
+
 
 export const EnderecoService = {
   getAll,
