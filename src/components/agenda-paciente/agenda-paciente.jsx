@@ -1,13 +1,17 @@
+/* eslint-disable prefer-const */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { format, addDays, parseISO, addMonths, subMonths, endOfWeek, isSameDay, endOfMonth, startOfWeek, isSameMonth, startOfMonth } from 'date-fns';
 
 import { Grid, Paper, Button, Dialog, Container, TextField, Typography, IconButton, DialogTitle, DialogActions, DialogContent } from '@mui/material';
 
 import Iconify from 'src/components/iconify';
+import { AgendaService } from 'src/service/agenda';
 
 const PlannerMensal = () => {
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [plannerData, setPlannerData] = useState(() => JSON.parse(localStorage.getItem('plannerData')) || {});
+  const [plannerData, setPlannerData] = useState([{}]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -19,6 +23,34 @@ const PlannerMensal = () => {
     taskNotes: ''
   });
 
+   // Função para buscar os dados do banco e preencher o planner
+  const fetchData = async () => {
+    const agenda = await AgendaService.getAll();
+    const updatedPlannerData = {};
+    agenda.forEach((task) => {
+      const taskDate = parseISO(task.data);
+      const monthKey = format(taskDate, 'yyyy-MM');
+      const day = taskDate.getDate();
+
+      if (!updatedPlannerData[monthKey]) {
+        updatedPlannerData[monthKey] = {};
+      }
+
+      if (!updatedPlannerData[monthKey][day]) {
+        updatedPlannerData[monthKey][day] = [];
+      }
+
+      updatedPlannerData[monthKey][day].push(task);
+    });
+    setPlannerData(updatedPlannerData);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  useEffect(() => {
+    console.log('plannerData',plannerData)
+  }, [plannerData]);
 
   const changeMonth = (offset) => {
     setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
@@ -30,10 +62,10 @@ const PlannerMensal = () => {
       setSelectedDate(date);
       setEditIndex(index);
       setFormData({
-        taskName: task.name,
-        taskDate: task.date,
-        taskTime: task.time,
-        taskNotes: task.notes
+        taskName: task.tarefa,
+        taskDate: task.data,
+        taskTime: task.hora,
+        taskNotes: task.descricao
       });
     } else {
       setEditMode(false);
@@ -51,7 +83,7 @@ const PlannerMensal = () => {
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const { taskName, taskDate, taskTime, taskNotes } = formData;
@@ -60,12 +92,18 @@ const PlannerMensal = () => {
     const monthKey = format(date, 'yyyy-MM');
 
     const task = {
-      name: taskName,
-      date: taskDate,
-      time: taskTime,
-      notes: taskNotes
+      id_paciente: 1,
+      id_consultorio: 1,
+      tarefa: taskName,
+      data: taskDate,
+      hora: taskTime,
+      descricao: taskNotes
     };
 
+    // Enviar a nova tarefa para o banco de dados
+    await AgendaService.insertData(task);
+
+    // Atualiza o plannerData após a inserção
     const updatedPlannerData = { ...plannerData };
 
     if (!updatedPlannerData[monthKey]) {
@@ -83,7 +121,6 @@ const PlannerMensal = () => {
     }
 
     setPlannerData(updatedPlannerData);
-    localStorage.setItem('plannerData', JSON.stringify(updatedPlannerData));
     closeModal();
   };
 
@@ -139,8 +176,8 @@ const PlannerMensal = () => {
               // eslint-disable-next-line no-loop-func
               plannerData[monthKey][day.getDate()].map((task, index) => (
                 <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
-                  <Typography variant="subtitle2">{task.time}</Typography>
-                  <Typography variant="body2">{task.name}</Typography>
+                  <Typography variant="subtitle2">{task.hora}</Typography>
+                  <Typography variant="body2">{task.tarefa}</Typography>
                   <IconButton size="small" onClick={() => editTask(day, index)}><Iconify icon="tabler:edit" /></IconButton>
                   <IconButton size="small" onClick={() => deleteTask(day, index)}><Iconify icon="material-symbols:delete-outline" /></IconButton>
                 </Paper>

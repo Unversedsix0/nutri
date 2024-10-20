@@ -1,6 +1,6 @@
 import { api } from '../api';
 
-const ROTA = 'agendameto';
+const ROTA = 'agendamento';
 
 const getAll = async () => {
   const { data } = await api.from(ROTA).select('*');
@@ -24,7 +24,8 @@ const getByData = async(dataConsulta) =>{
 }
 
 const insertData = async (agendamento) => {
-  const { data } = await api.from(ROTA).insert([
+
+  const { data, error } = await api.from(ROTA).insert([
     {
       id_consultorio: agendamento.id_consultorio,
       id_paciente: agendamento.id_paciente,
@@ -34,7 +35,8 @@ const insertData = async (agendamento) => {
       tarefa: agendamento.tarefa
     },
   ]);
-  console.log('insertData - data', data);
+  console.log('insertData - data', agendamento);
+  console.log('insertData - error', error);
 };
 
 
