@@ -125,6 +125,7 @@ const PlannerMensal = () => {
   };
 
   const editTask = (date, index) => {
+    console.log(date);
     const monthKey = format(date, 'yyyy-MM');
     const task = plannerData[monthKey][date.getDate()][index];
     openModal(task, date, index);
@@ -151,40 +152,39 @@ const PlannerMensal = () => {
 
   const renderDays = () => {
     const days = [];
-    const startDate = startOfWeek(startOfMonth(currentMonth));
-    const endDate = endOfWeek(endOfMonth(currentMonth));
+    const startDate = startOfMonth(currentMonth);
+    const endDate = endOfMonth(currentMonth);
 
     let day = startDate;
     while (day <= endDate) {
       const formattedDate = format(day, 'yyyy-MM-dd');
       const monthKey = format(day, 'yyyy-MM');
 
-      const isCurrentMonth = isSameMonth(day, currentMonth);
       const isToday = isSameDay(day, new Date());
 
-      days.push(
-        <Grid item xs={1.6} key={formattedDate}>
-          <Paper
-            variant= 'outlined' 
-           
-            sx={{ padding: 2, backgroundColor: isToday ? '#f0f0f0' : 'inherit', cursor: 'pointer' }}
-            // eslint-disable-next-line no-loop-func
-            onClick={() => openModal(null, day)}
-          >
-            <Typography variant="h6">{format(day, 'd')}</Typography>
-            {plannerData[monthKey] && plannerData[monthKey][day.getDate()] &&
-              // eslint-disable-next-line no-loop-func
-              plannerData[monthKey][day.getDate()].map((task, index) => (
-                <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
-                  <Typography variant="subtitle2">{task.hora}</Typography>
-                  <Typography variant="body2">{task.tarefa}</Typography>
-                  <IconButton size="small" onClick={() => editTask(day, index)}><Iconify icon="tabler:edit" /></IconButton>
-                  <IconButton size="small" onClick={() => deleteTask(day, index)}><Iconify icon="material-symbols:delete-outline" /></IconButton>
-                </Paper>
-              ))}
-          </Paper>
-        </Grid>  
-      );
+      // Usando uma IIFE para capturar o valor atual de 'day'
+      days.push((function (currentDay) {
+        return (
+          <Grid item xs={1.6} key={formattedDate}>
+            <Paper
+              variant='outlined'
+              sx={{ padding: 2, backgroundColor: isToday ? '#f0f0f0' : 'inherit', cursor: 'pointer' }}
+              onClick={() => openModal(null, currentDay)}
+            >
+              <Typography variant="h6">{format(currentDay, 'd')}</Typography>
+              {plannerData[monthKey] && plannerData[monthKey][currentDay.getDate()] &&
+                plannerData[monthKey][currentDay.getDate()].map((task, index) => (
+                  <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
+                    <Typography variant="subtitle2">{task.time}</Typography>
+                    <Typography variant="body2">{task.name}</Typography>
+                    <IconButton size="small" onClick={() => editTask(currentDay, index)}><Iconify icon="tabler:edit" /></IconButton>
+                    <IconButton size="small" onClick={() => deleteTask(currentDay, index)}><Iconify icon="material-symbols:delete-outline" /></IconButton>
+                  </Paper>
+                ))}
+            </Paper>
+          </Grid>
+        );
+      })(day)); // Passando 'day' para a IIFE
 
       day = addDays(day, 1);
     }
