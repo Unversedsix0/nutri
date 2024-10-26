@@ -70,10 +70,10 @@ const PlannerMensal = () => {
     } else {
       setEditMode(false);
       setFormData({
-        taskName: '',
-        taskDate: '',
-        taskTime: '',
-        taskNotes: ''
+        taskName: task.tarefa,
+        taskDate: task.data,
+        taskTime: task.hora,
+        taskNotes: task.descricao
       });
     }
     setIsModalOpen(true);
