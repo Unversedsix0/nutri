@@ -39,11 +39,18 @@ const insertData = async (agendamento) => {
   console.log('insertData - error', error);
 };
 
+const deleteByID = async (idConsulta) => {
+  const { error } = await api.from(ROTA).delete().eq({
+    id: idConsulta
+  });
+};
+
 
 export const AgendaService = {
   getAll,
   getByID,
   getByIDPaciente,
   getByData,
-  insertData
+  insertData,
+  deleteByID
 };
