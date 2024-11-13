@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 
 import { PacienteService } from 'src/service/paciente';
 
-
+import BannerHome from 'src/components/banner-home/banner-home';
 
 import AppTasks from '../app-tasks';
 import AppWidgetSummary from '../app-widget-summary';
@@ -46,6 +46,7 @@ export default function AppView() {
 
   return (
     <Container maxWidth="xl">
+      <BannerHome/>
 
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
