@@ -7,7 +7,7 @@ export default function AgendaPage() {
   return (
     <>
       <Helmet>
-        <title> Agenda | Minimal UI </title>
+        <title> Agenda | EatWise </title>
       </Helmet>
       <AgendaView/>
     </>

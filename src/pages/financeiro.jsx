@@ -8,7 +8,7 @@ export default function FinanPage() {
   return (
     <>
       <Helmet>
-        <title> Blog | Minimal UI </title>
+        <title> Blog | EatWise </title>
       </Helmet>
 
       <FinanView />
