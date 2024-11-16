@@ -1,17 +1,15 @@
 import { Helmet } from 'react-helmet-async';
-
-import { AppView } from 'src/sections/overview/view';
+import Home from 'src/components/relatorio';
 
 // ----------------------------------------------------------------------
 
-export default function AppPage() {
+export default function RelatorioPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | EatWise</title>
+        <title> Relatório | EatWise </title>
       </Helmet>
-
-      <AppView />
+      <Home/>
     </>
   );
 }

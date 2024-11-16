@@ -6,7 +6,12 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 import { PacienteService } from 'src/service/paciente';
+
 import {api} from 'src/service/api';
+
+
+
+import BannerHome from 'src/components/banner-home/banner-home';
 
 
 import AppTasks from '../app-tasks';
@@ -46,6 +51,7 @@ export default function AppView() {
 
   return (
     <Container maxWidth="xl">
+      <BannerHome/>
 
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
