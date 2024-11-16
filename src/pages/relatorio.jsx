@@ -1,15 +1,15 @@
 import { Helmet } from 'react-helmet-async';
-import AgendaView from 'src/sections/agenda/agenda-view';
+import Home from 'src/components/relatorio';
 
 // ----------------------------------------------------------------------
 
-export default function AgendaPage() {
+export default function RelatorioPage() {
   return (
     <>
       <Helmet>
-        <title> Agenda | EatWise </title>
+        <title> Relatório | EatWise </title>
       </Helmet>
-      <AgendaView/>
+      <Home/>
     </>
   );
 }
