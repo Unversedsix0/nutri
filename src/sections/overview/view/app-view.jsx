@@ -7,7 +7,12 @@ import Typography from '@mui/material/Typography';
 
 import { PacienteService } from 'src/service/paciente';
 
+import {api} from 'src/service/api';
+
+
+
 import BannerHome from 'src/components/banner-home/banner-home';
+
 
 import AppTasks from '../app-tasks';
 import AppWidgetSummary from '../app-widget-summary';
@@ -25,7 +30,7 @@ export default function AppView() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchPaciente()
+    // fetchPaciente()
     // const session = api.auth.session();
     // setUser(session?.user);
     // const { data: authListener } = api.auth.onAuthStateChange((event) => {

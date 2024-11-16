@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import {api} from 'src/service/api';
-import { account } from 'src/_mock/account';
+// import { account } from 'src/_mock/account';
 
 // ----------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar
+        {/* <Avatar
           src={account.photoURL}
           alt={account.displayName}
           sx={{
@@ -70,7 +70,7 @@ export default function AccountPopover() {
           }}
         >
           {account.displayName.charAt(0).toUpperCase()}
-        </Avatar>
+        </Avatar> */}
       </IconButton>
 
       <Popover
@@ -88,14 +88,14 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2 }}>
+        {/* <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
             {account.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {account.email}
           </Typography>
-        </Box>
+        </Box> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

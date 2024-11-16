@@ -36,9 +36,9 @@ export default function LoginView() {
     router.push('/dashboard');
   };
   
-  const loginGit = async() => {
+  const loginGoogle = async() => {
     await api.auth.signInWithOAuth({
-      provider: "github",
+      provider: "google",
     });
   };
   
@@ -121,6 +121,7 @@ export default function LoginView() {
 
           <Stack direction="row" spacing={2}>
             <Button
+              onClick={loginGoogle}
               fullWidth
               size="large"
               color="inherit"
@@ -141,7 +142,7 @@ export default function LoginView() {
             </Button>
 
             <Button
-              onClick={loginGit}
+              
               fullWidth
               size="large"
               color="inherit"
