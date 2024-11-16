@@ -6,7 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
 import { PacienteService } from 'src/service/paciente';
-
+import {api} from 'src/service/api';
 
 
 import AppTasks from '../app-tasks';
@@ -25,7 +25,7 @@ export default function AppView() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchPaciente()
+    // fetchPaciente()
     // const session = api.auth.session();
     // setUser(session?.user);
     // const { data: authListener } = api.auth.onAuthStateChange((event) => {
