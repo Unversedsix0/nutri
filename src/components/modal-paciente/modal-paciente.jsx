@@ -136,7 +136,7 @@ export default function ModalPaciente(props) {
                     displayEmpty
                     error={!!errors.sexo}
                   >
-                    <MenuItem value=""><em>Selecione</em></MenuItem>
+                
                     <MenuItem value="male">Masculino</MenuItem>
                     <MenuItem value="female">Feminino</MenuItem>
                     <MenuItem value="other">Outro</MenuItem>
@@ -159,7 +159,7 @@ export default function ModalPaciente(props) {
                     displayEmpty
                     error={!!errors.estadoCivil}
                   >
-                    <MenuItem value=""><em>Selecione</em></MenuItem>
+             
                     <MenuItem value="solteiro">Solteiro</MenuItem>
                     <MenuItem value="casado">Casado</MenuItem>
                     <MenuItem value="divorciado">Divorciado</MenuItem>
