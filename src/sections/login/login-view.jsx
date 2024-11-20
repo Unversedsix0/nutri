@@ -20,6 +20,7 @@ import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
+import { Navigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -36,13 +37,19 @@ export default function LoginView() {
     router.push('/dashboard');
   };
   
-  const loginGit = async() => {
+  const loginGoogle = async() => {
     await api.auth.signInWithOAuth({
-      provider: "github",
+      provider: "google",
     });
   };
   
-
+  api.auth.onAuthStateChange(async (event) => {
+    if (event === "SIGNED_IN") {
+      Navigate("/dashboard");
+    } else {
+      Navigate("/login");
+    }
+  })
 
   const renderForm = (
     <>
@@ -121,6 +128,7 @@ export default function LoginView() {
 
           <Stack direction="row" spacing={2}>
             <Button
+              onClick={loginGoogle}
               fullWidth
               size="large"
               color="inherit"
@@ -138,17 +146,6 @@ export default function LoginView() {
               sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
             >
               <Iconify icon="eva:facebook-fill" color="#1877F2" />
-            </Button>
-
-            <Button
-              onClick={loginGit}
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:github-fill" color="#000" />
             </Button>
           </Stack>
 

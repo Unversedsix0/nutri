@@ -1,17 +1,15 @@
 import { Helmet } from 'react-helmet-async';
-
-import { PacienteView } from 'src/sections/user/view';
+import Home from 'src/components/relatorio';
 
 // ----------------------------------------------------------------------
 
-export default function PacientePage() {
+export default function RelatorioPage() {
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Relatório | EatWise </title>
       </Helmet>
-
-      <PacienteView />
+      <Home/>
     </>
   );
 }

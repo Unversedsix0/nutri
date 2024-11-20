@@ -10,29 +10,34 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import {api} from 'src/service/api';
-import { account } from 'src/_mock/account';
+import { Navigate, useNavigate } from 'react-router-dom';
+// import { account } from 'src/_mock/account';
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
-];
+// const MENU_OPTIONS = [
+//   {
+//     label: 'Home',
+//     icon: 'eva:home-fill',
+//   },
+//   {
+//     label: 'Profile',
+//     icon: 'eva:person-fill',
+//   },
+//   {
+//     label: 'Settings',
+//     icon: 'eva:settings-2-fill',
+//   },
+// ];
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover(props) {
+  const {user} = props;
   const [open, setOpen] = useState(null);
+  const Navigate = useNavigate();
+
+  console.log("conta popover",user);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -42,9 +47,10 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-  const logout = async() => {
-    await api.auth.signOutWithOAuth();
-  };
+  async function signOutUser() {
+    const { error } = await api.auth.signOut();
+    Navigate("/login");
+  }
 
   return (
     <>
@@ -60,7 +66,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar
+        {/* <Avatar
           src={account.photoURL}
           alt={account.displayName}
           sx={{
@@ -70,7 +76,7 @@ export default function AccountPopover() {
           }}
         >
           {account.displayName.charAt(0).toUpperCase()}
-        </Avatar>
+        </Avatar> */}
       </IconButton>
 
       <Popover
@@ -88,29 +94,29 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2 }}>
+        {/* <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
             {account.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {account.email}
           </Typography>
-        </Box>
+        </Box> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        {MENU_OPTIONS.map((option) => (
+        {/* {MENU_OPTIONS.map((option) => (
           <MenuItem key={option.label} onClick={handleClose}>
             {option.label}
           </MenuItem>
-        ))}
+        ))} */}
 
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={logout}
+          onClick={() => signOutUser()} 
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
             Logout  

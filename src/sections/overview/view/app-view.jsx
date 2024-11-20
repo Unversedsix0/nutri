@@ -7,42 +7,26 @@ import Typography from '@mui/material/Typography';
 
 import { PacienteService } from 'src/service/paciente';
 
+import { api } from 'src/service/api';
+
+
 import BannerHome from 'src/components/banner-home/banner-home';
 
-import AppTasks from '../app-tasks';
+
+// import AppTasks from '../app-tasks';
 import AppWidgetSummary from '../app-widget-summary';
 
 // ----------------------------------------------------------------------
 
 export default function AppView() {
   const [paciente, setPaciente] = useState([]);
+  
 
   const fetchPaciente = async () => {
     const response = await PacienteService.getAll();
     setPaciente(response);
   }
 
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    fetchPaciente()
-    // const session = api.auth.session();
-    // setUser(session?.user);
-    // const { data: authListener } = api.auth.onAuthStateChange((event) => {
-    //   switch (event) {
-    //     case "LOGADO":
-    //       setUser(session.user)
-    //       break;
-    //     case "DESLOGADO":
-    //       setUser(null)
-    //       break;
-    //     default:
-    //   }
-    // });
-    // return () => {
-    //   authListener.unsubscribe();
-    // }
-  }, [])
 
   return (
     <Container maxWidth="xl">
