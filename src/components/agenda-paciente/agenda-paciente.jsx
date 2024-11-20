@@ -202,31 +202,32 @@ const PlannerMensal = () => {
 
       days.push(
         ((currentDay) => (
-          <Grid item xs={1.6} key={formattedDate}>
-            <Paper
-              variant="outlined"
-              sx={{
-                padding: 2,
-                backgroundColor,
-                cursor: 'pointer',
-              }}
-              onClick={(event) => handleDayClick(event, currentDay)}
-            >
-              <Typography variant="h6">{format(currentDay, 'd')}</Typography>
-              {plannerData[monthKey]?.[currentDay.getDate()]?.map((task, index) => (
-                <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
-                  <Typography variant="subtitle2">{task.hora}</Typography>
-                  <Typography variant="body2">{task.tarefa}</Typography>
-                  <IconButton size="small" onClick={() => editTask(currentDay, index)}>
-                    <Iconify icon="tabler:edit" />
-                  </IconButton>
-                  <IconButton size="small" onClick={() => deleteTask(currentDay, index)}>
-                    <Iconify icon="material-symbols:delete-outline" />
-                  </IconButton>
-                </Paper>
-              ))}
-            </Paper>
-          </Grid>
+          <Grid item xs={4} sm={2} md={1.6} key={formattedDate}>
+  <Paper
+    variant="outlined"
+    sx={{
+      padding: 2,
+      backgroundColor,
+      cursor: 'pointer',
+    }}
+    onClick={(event) => handleDayClick(event, currentDay)}
+  >
+    <Typography variant="h6">{format(currentDay, 'd')}</Typography>
+    {plannerData[monthKey]?.[currentDay.getDate()]?.map((task, index) => (
+      <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
+        <Typography variant="subtitle2">{task.hora}</Typography>
+        <Typography variant="body2">{task.tarefa}</Typography>
+        <IconButton size="small" onClick={() => editTask(currentDay, index)}>
+          <Iconify icon="tabler:edit" />
+        </IconButton>
+        <IconButton size="small" onClick={() => deleteTask(currentDay, index)}>
+          <Iconify icon="material-symbols:delete-outline" />
+        </IconButton>
+      </Paper>
+    ))}
+  </Paper>
+</Grid>
+
         ))(day)
       );
 
@@ -265,7 +266,6 @@ const PlannerMensal = () => {
         anchorReference="anchorPosition"
         anchorPosition={contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
       >
-        <MenuItem onClick={openViewModal}>Visualizar atendimentos</MenuItem>
         <MenuItem onClick={() => openModal(null, selectedDay)}>Realizar novo atendimento</MenuItem>
       </Menu>
     </Container>
