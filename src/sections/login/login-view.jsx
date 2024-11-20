@@ -20,6 +20,7 @@ import { bgGradient } from 'src/theme/css';
 
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
+import { Navigate } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -42,7 +43,13 @@ export default function LoginView() {
     });
   };
   
-
+  api.auth.onAuthStateChange(async (event) => {
+    if (event === "SIGNED_IN") {
+      Navigate("/dashboard");
+    } else {
+      Navigate("/login");
+    }
+  })
 
   const renderForm = (
     <>

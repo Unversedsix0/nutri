@@ -8,6 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 
 import { useResponsive } from 'src/hooks/use-responsive';
+import { useState, useEffect } from 'react';
 
 import { bgBlur } from 'src/theme/css';
 
@@ -18,12 +19,30 @@ import { NAV, HEADER } from './config-layout';
 import AccountPopover from './common/account-popover';
 import NotificationsPopover from './common/notifications-popover';
 
+import { api } from 'src/service/api';
+
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenNav }) {
   const theme = useTheme();
 
   const lgUp = useResponsive('up', 'lg');
+
+  const [user, setUser] = useState({});
+  
+  useEffect(() => {
+    async function getUserData() {
+      await api.auth.getUser().then((value) => {
+        if (value.data?.user) {
+          console.log("usseEffect",value.data.user);
+          setUser(value.data.user);
+        }
+      })
+      
+    }
+    getUserData( );
+  }, [])
+
 
   const renderContent = (
     <>
@@ -33,13 +52,12 @@ export default function Header({ onOpenNav }) {
         </IconButton>
       )}
 
-      <Searchbar />
 
       <Box sx={{ flexGrow: 1 }} />
 
       <Stack direction="row" alignItems="center" spacing={1}>
-        <NotificationsPopover />
-        <AccountPopover />
+        
+        <AccountPopover user={user} />
       </Stack>
     </>
   );
