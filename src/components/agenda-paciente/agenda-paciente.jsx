@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   format,
   addDays,
-  parseISO,
   addMonths,
   subMonths,
   endOfMonth,
@@ -18,24 +17,17 @@ import {
   Container,
   TextField,
   Typography,
-  IconButton,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
   Menu,
   MenuItem,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
-import Iconify from 'src/components/iconify';
-import { AgendaService } from 'src/service/agenda';
 
 const PlannerMensal = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [plannerData, setPlannerData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [editIndex, setEditIndex] = useState(null);
   const [formData, setFormData] = useState({
     taskName: '',
     taskDate: '',
@@ -44,6 +36,22 @@ const PlannerMensal = () => {
   });
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [attendances, setAttendances] = useState([]);
+  const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+
+  const fetchData = async () => {
+    // Simulando carregamento de dados
+    setPlannerData({});
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const changeMonth = (offset) => {
+    setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
+  };
 
   const handleDayClick = (event, day) => {
     event.preventDefault();
@@ -62,45 +70,21 @@ const PlannerMensal = () => {
     setContextMenu(null);
   };
 
-  const fetchData = async () => {
-    const agenda = await AgendaService.getAll();
-    const updatedPlannerData = {};
-
-    agenda.forEach((task) => {
-      const taskDate = parseISO(task.data);
-      const monthKey = format(taskDate, 'yyyy-MM');
-      const day = taskDate.getDate();
-
-      if (!updatedPlannerData[monthKey]) {
-        updatedPlannerData[monthKey] = {};
-      }
-      if (!updatedPlannerData[monthKey][day]) {
-        updatedPlannerData[monthKey][day] = [];
-      }
-
-      updatedPlannerData[monthKey][day].push(task);
-    });
-
-    setPlannerData(updatedPlannerData);
+  const handleMenuOption = (option) => {
+    handleCloseContextMenu();
+    if (option === 'novoAtendimento') {
+      openModal(selectedDay);
+    } else if (option === 'visualizarAtendimentos') {
+      openAttendanceModal(selectedDay);
+    }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const changeMonth = (offset) => {
-    setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
-  };
-
-  const openModal = (task = null, date = null, index = null) => {
-    setEditMode(!!task);
-    setSelectedDate(date);
-    setEditIndex(index);
+  const openModal = (date = null) => {
     setFormData({
-      taskName: task?.tarefa || '',
-      taskDate: task?.data || format(date, 'yyyy-MM-dd'),
-      taskTime: task?.hora || '',
-      taskNotes: task?.descricao || '',
+      taskName: '',
+      taskDate: format(date, 'yyyy-MM-dd'),
+      taskTime: '',
+      taskNotes: '',
     });
     setIsModalOpen(true);
   };
@@ -110,73 +94,32 @@ const PlannerMensal = () => {
     setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
   };
 
-  const openViewModal = () => {
-    setViewModalOpen(true);
-    handleCloseContextMenu();
-  };
-
-  const closeViewModal = () => {
-    setViewModalOpen(false);
-  };
-
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const { taskName, taskDate, taskTime, taskNotes } = formData;
-    const date = parseISO(taskDate);
-    const day = date.getDate();
-    const monthKey = format(date, 'yyyy-MM');
 
-    const task = {
-      id_paciente: 1,
-      id_consultorio: 1,
-      tarefa: taskName,
-      data: taskDate,
-      hora: taskTime,
-      descricao: taskNotes,
-    };
+    // Adicionar o novo atendimento à lista de atendimentos do dia
+    setAttendances((prevAttendances) => [
+      ...prevAttendances,
+      { taskName, taskDate, taskTime, taskNotes },
+    ]);
 
-    if (editMode && selectedDate) {
-      const originalDay = selectedDate.getDate();
-      if (day === originalDay) {
-        plannerData[monthKey][day][editIndex] = task;
-      } else {
-        plannerData[monthKey][originalDay].splice(editIndex, 1);
-        if (!plannerData[monthKey][day]) {
-          plannerData[monthKey][day] = [];
-        }
-        plannerData[monthKey][day].push(task);
-      }
-    } else {
-      if (!plannerData[monthKey]) plannerData[monthKey] = {};
-      if (!plannerData[monthKey][day]) plannerData[monthKey][day] = [];
-      plannerData[monthKey][day].push(task);
-    }
+    // Atualizar o conjunto de datas atendidas para incluir a data atual
+    setAttendedDates((prevAttendedDates) => new Set(prevAttendedDates).add(taskDate));
 
-    await AgendaService.insertData(task);
-    setPlannerData({ ...plannerData });
     closeModal();
   };
 
-  const editTask = (date, index) => {
-    const monthKey = format(date, 'yyyy-MM');
-    const task = plannerData[monthKey][date.getDate()][index];
-    openModal(task, date, index);
+  const openAttendanceModal = (day) => {
+    const dayAttendances = attendances.filter(
+      (attendance) => attendance.taskDate === format(day, 'yyyy-MM-dd')
+    );
+    setAttendances(dayAttendances); // Atualiza com os atendimentos do dia
+    setIsAttendanceModalOpen(true);
   };
 
-  const deleteTask = (date, index) => {
-    const monthKey = format(date, 'yyyy-MM');
-    const updatedPlannerData = { ...plannerData };
-    updatedPlannerData[monthKey][date.getDate()].splice(index, 1);
-
-    if (updatedPlannerData[monthKey][date.getDate()].length === 0) {
-      delete updatedPlannerData[monthKey][date.getDate()];
-    }
-    setPlannerData(updatedPlannerData);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const closeAttendanceModal = () => {
+    setIsAttendanceModalOpen(false);
   };
 
   const renderDays = () => {
@@ -187,47 +130,31 @@ const PlannerMensal = () => {
     let day = startDate;
     while (day <= endDate) {
       const formattedDate = format(day, 'yyyy-MM-dd');
-      const monthKey = format(day, 'yyyy-MM');
       const isToday = isSameDay(day, new Date());
-      const hasTask = plannerData[monthKey]?.[day.getDate()]?.length > 0;
+      const hasAttendance = attendedDates.has(formattedDate); // Verifica se a data tem atendimento
 
-      let backgroundColor;
-      if (isToday) {
-        backgroundColor = '#f0f0f0';
-      } else if (hasTask) {
-        backgroundColor = '#c8e6c9';
-      } else {
-        backgroundColor = 'inherit';
-      }
+      let backgroundColor = hasAttendance ? '#87CEFA' : (isToday ? '#E0FFFF' : 'white'); 
 
       days.push(
         ((currentDay) => (
           <Grid item xs={4} sm={2} md={1.6} key={formattedDate}>
-  <Paper
-    variant="outlined"
-    sx={{
-      padding: 2,
-      backgroundColor,
-      cursor: 'pointer',
-    }}
-    onClick={(event) => handleDayClick(event, currentDay)}
-  >
-    <Typography variant="h6">{format(currentDay, 'd')}</Typography>
-    {plannerData[monthKey]?.[currentDay.getDate()]?.map((task, index) => (
-      <Paper key={index} sx={{ padding: 1, marginTop: 1 }}>
-        <Typography variant="subtitle2">{task.hora}</Typography>
-        <Typography variant="body2">{task.tarefa}</Typography>
-        <IconButton size="small" onClick={() => editTask(currentDay, index)}>
-          <Iconify icon="tabler:edit" />
-        </IconButton>
-        <IconButton size="small" onClick={() => deleteTask(currentDay, index)}>
-          <Iconify icon="material-symbols:delete-outline" />
-        </IconButton>
-      </Paper>
-    ))}
-  </Paper>
-</Grid>
-
+            <Paper
+              variant="outlined"
+              sx={{
+                padding: 2,
+                backgroundColor,
+                cursor: 'pointer',
+                borderRadius: 2,
+                transition: '0.3s',
+                '&:hover': { backgroundColor: '#E3F2FD' },
+              }}
+              onClick={(event) => handleDayClick(event, currentDay)}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                {format(currentDay, 'd')}
+              </Typography>
+            </Paper>
+          </Grid>
         ))(day)
       );
 
@@ -237,37 +164,117 @@ const PlannerMensal = () => {
   };
 
   return (
-    <Container>
-      <Typography variant="h4">Planner Mensal</Typography>
-      <Grid container justifyContent="space-between">
-        <Button onClick={() => changeMonth(-1)}>Anterior</Button>
-        <Typography variant="h5">{format(currentMonth, 'MMMM yyyy', { locale: ptBR })}</Typography>
-        <Button onClick={() => changeMonth(1)}>Próximo</Button>
+    <Container sx={{ marginTop: 4 }}>
+      <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 3 }}>
+        Planner Mensal
+      </Typography>
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Button variant="contained" color="primary" onClick={() => changeMonth(-1)}>
+          Anterior
+        </Button>
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+          {format(currentMonth, 'MMMM yyyy', { locale: ptBR })}
+        </Typography>
+        <Button variant="contained" color="primary" onClick={() => changeMonth(1)}>
+          Próximo
+        </Button>
       </Grid>
-      <Grid container spacing={1}>{renderDays()}</Grid>
+      <Grid container spacing={1} sx={{ marginTop: 2 }}>
+        {renderDays()}
+      </Grid>
 
-      <Dialog open={isModalOpen} onClose={closeModal}>
-        <DialogTitle>{editMode ? 'Editar Tarefa' : 'Adicionar Tarefa'}</DialogTitle>
-        <DialogContent>
-          <TextField label="Tarefa" name="taskName" value={formData.taskName} onChange={handleInputChange} fullWidth required />
-          <TextField label="Data" name="taskDate" type="date" value={formData.taskDate} onChange={handleInputChange} fullWidth required />
-          <TextField label="Hora" name="taskTime" type="time" value={formData.taskTime} onChange={handleInputChange} fullWidth required />
-          <TextField label="Notas" name="taskNotes" value={formData.taskNotes} onChange={handleInputChange} fullWidth multiline rows={3} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeModal}>Cancelar</Button>
-          <Button onClick={handleSubmit}>{editMode ? 'Salvar' : 'Adicionar'}</Button>
-        </DialogActions>
-      </Dialog>
-
+      {/* Menu de contexto */}
       <Menu
         open={contextMenu !== null}
         onClose={handleCloseContextMenu}
         anchorReference="anchorPosition"
-        anchorPosition={contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
       >
-        <MenuItem onClick={() => openModal(null, selectedDay)}>Realizar novo atendimento</MenuItem>
+        <MenuItem onClick={() => handleMenuOption('novoAtendimento')}>Realizar novo atendimento</MenuItem>
+        <MenuItem onClick={() => handleMenuOption('visualizarAtendimentos')}>Visualizar atendimentos</MenuItem>
       </Menu>
+
+      {/* Modal de criação de novo atendimento */}
+      <Dialog open={isModalOpen} onClose={closeModal} maxWidth="sm" fullWidth>
+        <form onSubmit={handleSubmit}>
+          <Typography variant="h6" align="center" sx={{ marginTop: 2, fontWeight: 'bold' }}>
+            Novo Atendimento
+          </Typography>
+          <Container sx={{ padding: 3 }}>
+            <TextField
+              label="Nome do Atendimento"
+              value={formData.taskName}
+              onChange={(e) => setFormData({ ...formData, taskName: e.target.value })}
+              fullWidth
+              required
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Data"
+              type="date"
+              value={formData.taskDate}
+              onChange={(e) => setFormData({ ...formData, taskDate: e.target.value })}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Horário"
+              type="time"
+              value={formData.taskTime}
+              onChange={(e) => setFormData({ ...formData, taskTime: e.target.value })}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Notas"
+              value={formData.taskNotes}
+              onChange={(e) => setFormData({ ...formData, taskNotes: e.target.value })}
+              fullWidth
+              multiline
+              rows={4}
+              sx={{ marginBottom: 2 }}
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Salvar
+            </Button>
+          </Container>
+        </form>
+      </Dialog>
+
+      {/* Modal para visualizar atendimentos */}
+      <Dialog open={isAttendanceModalOpen} onClose={closeAttendanceModal} maxWidth="sm" fullWidth>
+        <Typography variant="h6" align="center" sx={{ marginTop: 2, fontWeight: 'bold' }}>
+          Atendimentos do Dia
+        </Typography>
+        <List>
+          {attendances.map((attendance, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={attendance.taskName}
+                secondary={`Hora: ${attendance.taskTime} - Notas: ${attendance.taskNotes}`}
+              />
+              <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
+          Deletar
+        </Button>
+        <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
+          Editar
+        </Button>
+            </ListItem>
+          
+          ))}
+        </List>
+        <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
+          Fechar
+        </Button>
+      </Dialog>
     </Container>
   );
 };

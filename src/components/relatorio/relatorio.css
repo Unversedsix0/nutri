@@ -71,7 +71,7 @@
   
   /* Caixa de texto maior */
   .campo textarea {
-    height: 450px;
+    height: 150px;
     resize: none;
   }
   
