@@ -27,11 +27,6 @@ const navConfig = [
     path: '/relatorio',
     icon: icon('ic_blog'),
   },
-  {
-    title: 'Financeiro',
-    path: '/financeiro',
-    icon: icon('ic_blog'),
-  },
 ];
 
 export default navConfig;
