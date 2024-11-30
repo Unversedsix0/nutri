@@ -33,7 +33,7 @@ export default function PacientePage() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
 
-  const [users, setUsers] = useState([{nome:'Gabriel', company:'UNITAU', isVerified:true, status:'active'}]);
+  const [users, setUsers] = useState([{nome:'Gabriel', company:'UNITAU', email:'Gaba.olipires@gmail.com', status:'active'}]);
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -131,8 +131,8 @@ export default function PacientePage() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'name', label: 'Nome' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'isVerified', label: 'Débito', align: 'center' },
+                  { id: 'tel', label: 'Telefone' },
+                  { id: 'email', label: 'Email' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
@@ -147,7 +147,7 @@ export default function PacientePage() {
                       status={row.status}
                       company={row.company}
                       avatarUrl={row.avatarUrl}
-                      isVerified={row.isVerified}
+                      email={row.email}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
                     />
