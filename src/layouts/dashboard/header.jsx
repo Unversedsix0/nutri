@@ -14,10 +14,10 @@ import { bgBlur } from 'src/theme/css';
 
 import Iconify from 'src/components/iconify';
 
-import Searchbar from './common/searchbar';
+
 import { NAV, HEADER } from './config-layout';
 import AccountPopover from './common/account-popover';
-import NotificationsPopover from './common/notifications-popover';
+
 
 import { api } from 'src/service/api';
 
@@ -35,7 +35,7 @@ export default function Header({ onOpenNav }) {
       await api.auth.getUser().then((value) => {
         if (value.data?.user) {
           console.log("usseEffect",value.data.user);
-          setUser(value.data.user);
+          setUser(value.data.user.identities[0].identity_data);
         }
       })
       
