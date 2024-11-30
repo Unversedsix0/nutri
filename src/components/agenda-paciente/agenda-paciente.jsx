@@ -133,7 +133,7 @@ const PlannerMensal = () => {
       const isToday = isSameDay(day, new Date());
       const hasAttendance = attendedDates.has(formattedDate); // Verifica se a data tem atendimento
 
-      let backgroundColor = hasAttendance ? 'blue' : (isToday ? '#87CEFA' : 'white'); 
+      let backgroundColor = hasAttendance ? '#87CEFA' : (isToday ? '#E0FFFF' : 'white'); 
 
       days.push(
         ((currentDay) => (
@@ -245,7 +245,6 @@ const PlannerMensal = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Salvar
             </Button>
-           
           </Container>
         </form>
       </Dialog>
