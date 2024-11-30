@@ -261,14 +261,13 @@ const PlannerMensal = () => {
                 primary={attendance.taskName}
                 secondary={`Hora: ${attendance.taskTime} - Notas: ${attendance.taskNotes}`}
               />
-              <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
+              <Button variant="contained" color="primary" onClick={() => handleDelete(attendance)} sx={{ marginRight: 1 }}>
           Deletar
         </Button>
-        <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
+        <Button variant="contained" color="primary" onClick={() => handleDelete(attendance)} sx={{ marginRight: 1 }}>
           Editar
         </Button>
             </ListItem>
-          
           ))}
         </List>
         <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
