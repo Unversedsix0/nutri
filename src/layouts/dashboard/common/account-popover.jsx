@@ -66,19 +66,19 @@ export default function AccountPopover(props) {
           }),
         }}
       >
-        {/* <Avatar
-          src={account.photoURL}
-          alt={account.displayName}
+        <Avatar
+          src={user.avatar_url}
+          // alt={user.Full_name}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account.displayName.charAt(0).toUpperCase()}
-        </Avatar> */}
-      </IconButton>
 
+        </Avatar>
+      </IconButton>
+        
       <Popover
         open={!!open}
         anchorEl={open}
@@ -94,14 +94,14 @@ export default function AccountPopover(props) {
           },
         }}
       >
-        {/* <Box sx={{ my: 1.5, px: 2 }}>
+        <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user.full_name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user.email}
           </Typography>
-        </Box> */}
+        </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
