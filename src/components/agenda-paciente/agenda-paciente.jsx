@@ -40,6 +40,48 @@ const PlannerMensal = () => {
   const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
 
+  // Variáveis de estado
+const [editingIndex, setEditingIndex] = useState(null); // Índice do atendimento sendo editado
+
+// Função para abrir o modal de edição
+const handleEdit = (index) => {
+  setFormData(attendances[index]); // Preenche o formulário com os dados existentes
+  setEditingIndex(index); // Define o índice do atendimento sendo editado
+  setIsModalOpen(true); // Abre o modal
+};
+
+// Função para salvar o atendimento
+const handleSave= (e) => {
+  e.preventDefault();
+
+  if (editingIndex !== null) {
+    // Atualiza o atendimento existente
+    const updatedAttendances = [...attendances];
+    updatedAttendances[editingIndex] = formData;
+    setAttendances(updatedAttendances);
+  } else {
+    // Cria um novo atendimento
+    setAttendances([...attendances, formData]);
+    handleHighlightDate(formData.taskDate);
+  }
+
+  // Fecha o modal e reseta o formulário
+  setIsModalOpen(false);
+  setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
+  setEditingIndex(null); // Reseta o índice de edição
+};
+
+
+// Função para deletar um atendimento
+const handleDelete = (index) => {
+  const updatedAttendances = attendances.filter((_, i) => i !== index); // Remove pelo índice
+  setAttendances(updatedAttendances);
+
+  // Remove destaque do calendário se não houver mais atendimentos
+  const remainingDates = updatedAttendances.map((attendance) => attendance.taskDate);
+  setAttendedDates(new Set(remainingDates));
+
+};
   const fetchData = async () => {
     // Simulando carregamento de dados
     setPlannerData({});
@@ -88,27 +130,16 @@ const PlannerMensal = () => {
     });
     setIsModalOpen(true);
   };
-
+  // Fecha o modal
   const closeModal = () => {
     setIsModalOpen(false);
     setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const { taskName, taskDate, taskTime, taskNotes } = formData;
-
-    // Adicionar o novo atendimento à lista de atendimentos do dia
-    setAttendances((prevAttendances) => [
-      ...prevAttendances,
-      { taskName, taskDate, taskTime, taskNotes },
-    ]);
-
-    // Atualizar o conjunto de datas atendidas para incluir a data atual
-    setAttendedDates((prevAttendedDates) => new Set(prevAttendedDates).add(taskDate));
-
-    closeModal();
-  };
+  // Função para destacar datas atendidas
+const handleHighlightDate = (date) => {
+  setAttendedDates((prevAttendedDates) => new Set([...prevAttendedDates, date]));
+};
 
   const openAttendanceModal = (day) => {
     const dayAttendances = attendances.filter(
@@ -200,7 +231,7 @@ const PlannerMensal = () => {
 
       {/* Modal de criação de novo atendimento */}
       <Dialog open={isModalOpen} onClose={closeModal} maxWidth="sm" fullWidth>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSave}>
           <Typography variant="h6" align="center" sx={{ marginTop: 2, fontWeight: 'bold' }}>
             Novo Atendimento
           </Typography>
@@ -261,13 +292,14 @@ const PlannerMensal = () => {
                 primary={attendance.taskName}
                 secondary={`Hora: ${attendance.taskTime} - Notas: ${attendance.taskNotes}`}
               />
-              <Button variant="contained" color="primary" onClick={() => handleDelete(attendance)} sx={{ marginRight: 1 }}>
+              <Button variant="contained" color="primary" onClick={() => handleDelete(index)}  fullWidth sx={{ marginTop: 5, width: '40px'}}>
           Deletar
         </Button>
-        <Button variant="contained" color="primary" onClick={() => handleDelete(attendance)} sx={{ marginRight: 1 }}>
+        <Button variant="contained" color="primary" onClick={() => handleEdit(index)} fullWidth sx={{ marginTop: 5, width: '40px'}}>
           Editar
         </Button>
             </ListItem>
+          
           ))}
         </List>
         <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
