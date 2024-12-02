@@ -164,7 +164,7 @@ export default function PacientePage({pacientes}) {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
+                      id={row.id}
                       name={row.nome}
                       status={row.status}
                       company={row.company}

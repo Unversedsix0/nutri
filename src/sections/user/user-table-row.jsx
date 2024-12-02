@@ -14,9 +14,12 @@ import IconButton from '@mui/material/IconButton';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
+
+import { PacienteService } from 'src/service/paciente';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
+  id,
   selected,
   name,
   avatarUrl,
@@ -32,6 +35,11 @@ export default function UserTableRow({
   };
 
   const handleCloseMenu = () => {
+    setOpen(null);
+  };
+
+  const deleteRow = () => {
+    PacienteService.deleteByID(id);
     setOpen(null);
   };
 
@@ -81,7 +89,7 @@ export default function UserTableRow({
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={deleteRow} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
@@ -92,6 +100,7 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   avatarUrl: PropTypes.any,
+  id: PropTypes.any,
   company: PropTypes.any,
   handleClick: PropTypes.func,
   email: PropTypes.any,
