@@ -72,35 +72,35 @@ export default function ModalPaciente(props) {
             )}
           />
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-  <Controller
-    name="altura"
-    control={control}
-    defaultValue=""
-    rules={{
-      required: 'Altura é obrigatória',
-      pattern: {
-        value: /^[0-9]{1}\.[0-9]{2}$/,
-        message: 'Altura deve estar no formato 0.00',
-      },
-    }}
-    render={({ field }) => (
-      <FormControl fullWidth margin="normal" variant="outlined">
-        <InputMask
-          mask="9.99"
-          {...field}
-        >
-          {(inputProps) => (
-            <TextField
-              {...inputProps}
-              id="altura"
-              variant="outlined"
-              label="Altura"
-              required
-              InputLabelProps={{ shrink: true }}
-              error={!!errors.altura}
-              helperText={errors.altura ? errors.altura.message : ''}
-            />
-          )}
+          <Controller
+            name="altura"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: 'Altura é obrigatória',
+              pattern: {
+                value: /^[0-9]{1}\.[0-9]{2}$/,
+                message: 'Altura deve estar no formato 0.00',
+              },
+            }}
+          render={({ field }) => (
+            <FormControl fullWidth margin="normal" variant="outlined">
+              <InputMask
+                mask="9.99"
+                {...field}
+              >
+              {(inputProps) => (
+              <TextField
+                {...inputProps}
+                id="altura"
+                variant="outlined"
+                label="Altura"
+                required
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.altura}
+                helperText={errors.altura ? errors.altura.message : ''}
+              />
+             )}
         </InputMask>
       </FormControl>
     )}
@@ -148,7 +148,7 @@ export default function ModalPaciente(props) {
               rules={{ required: 'CPF é obrigatório' }}
               render={({ field }) => (
                 <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel htmlFor="cpf">CPF</InputLabel>
+                
                   <InputMask
                     mask="999.999.999-99"
                     {...field}
@@ -272,7 +272,6 @@ export default function ModalPaciente(props) {
               rules={{ required: 'CEP é obrigatório' }}
               render={({ field }) => (
                 <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel htmlFor="cep">CEP</InputLabel>
                   <InputMask
                     mask="99999-999"
                     {...field}
