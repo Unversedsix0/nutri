@@ -46,9 +46,10 @@ const insertData = async (paciente) => {
 };
 
 const deleteByID = async (idUsuario) => {
-  const { error } = await api.from(ROTA).delete().eq({
-    id: idUsuario,
-  });
+
+  const { error } = await api.from(ROTA).delete().eq('id', idUsuario);
+  console.log('error',error)
+  console.log('idUsuario', idUsuario);
 };
 
 const update = async (paciente) => {
