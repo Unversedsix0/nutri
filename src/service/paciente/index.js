@@ -1,6 +1,6 @@
 import { api } from '../api';
 
-const ROTA = 'Paciente';
+const ROTA = 'paciente';
 
 const getAll = async () => {
   const { data } = await api.from(ROTA).select('*');
@@ -79,5 +79,7 @@ export const PacienteService = {
   getByID,
   getByNome,
   getByCPF,
-  insertData
+  insertData,
+  deleteByID,
+  update
 };
