@@ -39,7 +39,9 @@ const insertData = async (paciente) => {
       nome_pai: paciente.nome_pai,
       dt_nascimento: paciente.dt_nascimento,
       status: true,
-      id_sexo: paciente.id_sexo
+      id_sexo: paciente.id_sexo,
+      peso: paciente.peso,
+      altura:paciente.altura
     },
   ]);
   console.log('insertData - data', data);
@@ -74,6 +76,8 @@ const update = async (paciente) => {
     .eq({ id: paciente.id })
     .select();
 };
+
+
 
 export const PacienteService = {
   getAll,

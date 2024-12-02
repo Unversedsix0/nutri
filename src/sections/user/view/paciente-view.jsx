@@ -11,7 +11,7 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination'; // Importação do TextField
-
+import { PacienteService } from 'src/service/paciente';
 
 
 
@@ -54,6 +54,7 @@ export default function PacientePage({pacientes}) {
   
    const parentToChild = (dataFormulario) => {
     console.log('estou aqui...')
+    PacienteService.insertData(dataFormulario)
     setUsers([...users, dataFormulario]);
   }
 
