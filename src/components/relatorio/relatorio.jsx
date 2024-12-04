@@ -51,7 +51,7 @@ const Relatorio = () => {
     doc.text(pdfContent, 10, 10);
 
     // Baixando o PDF gerado
-    doc.save(`${activeTab}_relatorio.pdf`);
+    doc.save(`${paciente}_relatorio.pdf`);
   };
 
   return (
