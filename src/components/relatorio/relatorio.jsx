@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { jsPDF } from "jspdf";
 import "./relatorio.css";
 
 const Relatorio = () => {
@@ -8,6 +9,9 @@ const Relatorio = () => {
   const [informacoes, setInformacoes] = useState("");
 
   const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Definindo o conteúdo do PDF
     const pdfContent = `
       Relatório: ${activeTab}
       Paciente: ${paciente || "Não vinculado"}
@@ -15,13 +19,12 @@ const Relatorio = () => {
       Informações:
       ${informacoes || "Nenhuma informação adicionada"}
     `;
-    const blob = new Blob([pdfContent], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${activeTab}_relatorio.pdf`;
-    link.click();
-    URL.revokeObjectURL(url);
+
+    // Adicionando o conteúdo ao PDF
+    doc.text(pdfContent, 10, 10);
+
+    // Baixando o PDF gerado
+    doc.save(`${activeTab}_relatorio.pdf`);
   };
 
   return (

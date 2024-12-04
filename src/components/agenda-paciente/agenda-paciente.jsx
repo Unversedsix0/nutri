@@ -33,6 +33,7 @@ const PlannerMensal = () => {
     taskDate: '',
     taskTime: '',
     taskNotes: '',
+    status: '',
   });
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
@@ -41,47 +42,47 @@ const PlannerMensal = () => {
   const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
 
   // Variáveis de estado
-const [editingIndex, setEditingIndex] = useState(null); // Índice do atendimento sendo editado
+  const [editingIndex, setEditingIndex] = useState(null); // Índice do atendimento sendo editado
 
-// Função para abrir o modal de edição
-const handleEdit = (index) => {
-  setFormData(attendances[index]); // Preenche o formulário com os dados existentes
-  setEditingIndex(index); // Define o índice do atendimento sendo editado
-  setIsModalOpen(true); // Abre o modal
-};
+  // Função para abrir o modal de edição
+  const handleEdit = (index) => {
+    setFormData(attendances[index]); // Preenche o formulário com os dados existentes
+    setEditingIndex(index); // Define o índice do atendimento sendo editado
+    setIsModalOpen(true); // Abre o modal
+  };
 
-// Função para salvar o atendimento
-const handleSave= (e) => {
-  e.preventDefault();
+  // Função para salvar o atendimento
+  const handleSave = (e) => {
+    e.preventDefault();
 
-  if (editingIndex !== null) {
-    // Atualiza o atendimento existente
-    const updatedAttendances = [...attendances];
-    updatedAttendances[editingIndex] = formData;
+    if (editingIndex !== null) {
+      // Atualiza o atendimento existente
+      const updatedAttendances = [...attendances];
+      updatedAttendances[editingIndex] = formData;
+      setAttendances(updatedAttendances);
+    } else {
+      // Cria um novo atendimento
+      setAttendances([...attendances, formData]);
+      handleHighlightDate(formData.taskDate, formData.status);
+    }
+
+    // Fecha o modal e reseta o formulário
+    setIsModalOpen(false);
+    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
+    setEditingIndex(null); // Reseta o índice de edição
+  };
+
+
+  // Função para deletar um atendimento
+  const handleDelete = (index) => {
+    const updatedAttendances = attendances.filter((_, i) => i !== index); // Remove pelo índice
     setAttendances(updatedAttendances);
-  } else {
-    // Cria um novo atendimento
-    setAttendances([...attendances, formData]);
-    handleHighlightDate(formData.taskDate);
-  }
 
-  // Fecha o modal e reseta o formulário
-  setIsModalOpen(false);
-  setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
-  setEditingIndex(null); // Reseta o índice de edição
-};
+    // Remove destaque do calendário se não houver mais atendimentos
+    const remainingDates = updatedAttendances.map((attendance) => attendance.taskDate);
+    setAttendedDates(new Set(remainingDates));
 
-
-// Função para deletar um atendimento
-const handleDelete = (index) => {
-  const updatedAttendances = attendances.filter((_, i) => i !== index); // Remove pelo índice
-  setAttendances(updatedAttendances);
-
-  // Remove destaque do calendário se não houver mais atendimentos
-  const remainingDates = updatedAttendances.map((attendance) => attendance.taskDate);
-  setAttendedDates(new Set(remainingDates));
-
-};
+  };
   const fetchData = async () => {
     // Simulando carregamento de dados
     setPlannerData({});
@@ -101,9 +102,9 @@ const handleDelete = (index) => {
     setContextMenu(
       contextMenu === null
         ? {
-            mouseX: event.clientX - 2,
-            mouseY: event.clientY - 4,
-          }
+          mouseX: event.clientX - 2,
+          mouseY: event.clientY - 4,
+        }
         : null
     );
   };
@@ -137,9 +138,9 @@ const handleDelete = (index) => {
   };
 
   // Função para destacar datas atendidas
-const handleHighlightDate = (date) => {
-  setAttendedDates((prevAttendedDates) => new Set([...prevAttendedDates, date]));
-};
+  const handleHighlightDate = (date) => {
+    setAttendedDates((prevAttendedDates) => new Set([...prevAttendedDates, date]));
+  };
 
   const openAttendanceModal = (day) => {
     const dayAttendances = attendances.filter(
@@ -164,7 +165,7 @@ const handleHighlightDate = (date) => {
       const isToday = isSameDay(day, new Date());
       const hasAttendance = attendedDates.has(formattedDate); // Verifica se a data tem atendimento
 
-      let backgroundColor = hasAttendance ? '#87CEFA' : (isToday ? '#E0FFFF' : 'white'); 
+      let backgroundColor = hasAttendance ? '#87CEFA' : (isToday ? '#E0FFFF' : 'white');
 
       days.push(
         ((currentDay) => (
@@ -273,7 +274,21 @@ const handleHighlightDate = (date) => {
               rows={4}
               sx={{ marginBottom: 2 }}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <TextField
+              label="Status"
+              select
+              value={formData.status || ''}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              fullWidth
+              required
+              sx={{ marginBottom: 2 }}
+            >
+              <MenuItem value=""></MenuItem>
+              <MenuItem value="aguardando">Aguardando Confirmação</MenuItem>
+              <MenuItem value="confirmado">Confirmar Agendamento</MenuItem>
+            </TextField>
+
+            <Button type="submit" variant="contained" color="primary" fullWidth >
               Salvar
             </Button>
           </Container>
@@ -292,14 +307,26 @@ const handleHighlightDate = (date) => {
                 primary={attendance.taskName}
                 secondary={`Hora: ${attendance.taskTime} - Notas: ${attendance.taskNotes}`}
               />
-              <Button variant="contained" color="primary" onClick={() => handleDelete(index)}  fullWidth sx={{ marginTop: 5, width: '40px'}}>
-          Deletar
-        </Button>
-        <Button variant="contained" color="primary" onClick={() => handleEdit(index)} fullWidth sx={{ marginTop: 5, width: '40px'}}>
-          Editar
-        </Button>
+              {/* Status como Typography */}
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: attendance.status === 'confirmado' ? 'green' : 'orange',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  marginTop: 5,
+                  pointerEvents: 'none', // Desativa cliques
+                }}
+              >
+                {attendance.status === 'confirmado' ? 'Confirmado' : 'Aguardando'}
+              </Button>
+              <Button variant="contained" color="primary" onClick={() => handleDelete(index)} fullWidth sx={{ marginTop: 5, width: '40px' }}>
+                Deletar
+              </Button>
+              <Button variant="contained" color="primary" onClick={() => handleEdit(index)} fullWidth sx={{ marginTop: 5, width: '40px' }}>
+                Editar
+              </Button>
             </ListItem>
-          
           ))}
         </List>
         <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
