@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { jsPDF } from "jspdf";
 import { PacienteService } from "src/service/paciente";
 import {
   Box,
@@ -13,6 +14,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
+
 
 const Relatorio = () => {
   const [activeTab, setActiveTab] = useState("Anamneses");
@@ -35,6 +37,9 @@ const Relatorio = () => {
   }, [pacientes]);
 
   const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Definindo o conteúdo do PDF
     const pdfContent = `
       Relatório: ${activeTab}
       Paciente: ${paciente || "Não vinculado"}
@@ -42,14 +47,11 @@ const Relatorio = () => {
       Informações:
       ${informacoes || "Nenhuma informação adicionada"}
     `;
+    // Adicionando o conteúdo ao PDF
+    doc.text(pdfContent, 10, 10);
 
-    const blob = new Blob([pdfContent], { type: "application/pdf" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${paciente}_relatorio.pdf`;
-    link.click();
-    URL.revokeObjectURL(url);
+    // Baixando o PDF gerado
+    doc.save(`${activeTab}_relatorio.pdf`);
   };
 
   return (
