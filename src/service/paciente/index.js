@@ -1,6 +1,6 @@
 import { api } from '../api';
 
-const ROTA = 'Paciente';
+const ROTA = 'paciente';
 
 const getAll = async () => {
   const { data } = await api.from(ROTA).select('*');
@@ -39,16 +39,19 @@ const insertData = async (paciente) => {
       nome_pai: paciente.nome_pai,
       dt_nascimento: paciente.dt_nascimento,
       status: true,
-      id_sexo: paciente.id_sexo
+      id_sexo: paciente.id_sexo,
+      peso: paciente.peso,
+      altura:paciente.altura
     },
   ]);
   console.log('insertData - data', data);
 };
 
 const deleteByID = async (idUsuario) => {
-  const { error } = await api.from(ROTA).delete().eq({
-    id: idUsuario,
-  });
+
+  const { error } = await api.from(ROTA).delete().eq('id', idUsuario);
+  console.log('error',error)
+  console.log('idUsuario', idUsuario);
 };
 
 const update = async (paciente) => {
@@ -74,10 +77,14 @@ const update = async (paciente) => {
     .select();
 };
 
+
+
 export const PacienteService = {
   getAll,
   getByID,
   getByNome,
   getByCPF,
-  insertData
+  insertData,
+  deleteByID,
+  update
 };

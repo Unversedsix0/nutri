@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable import/no-extraneous-dependencies */
-import { useState } from 'react';
-
+import { useState ,useEffect} from 'react';
+                                      
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -10,6 +11,10 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination'; // Importação do TextField
+import { PacienteService } from 'src/service/paciente';
+
+
+
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -25,7 +30,8 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // Definindo o estilo do modal
 
 
-export default function PacientePage() {
+export default function PacientePage({pacientes}) {
+ 
   const [open, setOpen] = useState(false);  // Estado para controle do modal
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -33,12 +39,22 @@ export default function PacientePage() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
 
-  const [users, setUsers] = useState([{nome:'Gabriel', company:'UNITAU', email:'Gaba.olipires@gmail.com', status:'active'}]);
+  const [users, setUsers] = useState([{}]);
+  useEffect(() => {
+    setUsers(pacientes);
+  }, [pacientes]);
 
+
+  useEffect(() => {
+    console.log('plannerData',users)
+  }, [users]);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  console.log('pacientes',pacientes)
+  
    const parentToChild = (dataFormulario) => {
     console.log('estou aqui...')
+    PacienteService.insertData(dataFormulario)
     setUsers([...users, dataFormulario]);
   }
 
@@ -52,6 +68,8 @@ export default function PacientePage() {
       setOrderBy(id);
     }
   };
+
+
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -102,6 +120,11 @@ export default function PacientePage() {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+
+ 
+
+
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -142,7 +165,7 @@ export default function PacientePage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
+                      id={row.id}
                       name={row.nome}
                       status={row.status}
                       company={row.company}
