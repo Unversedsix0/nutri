@@ -89,7 +89,7 @@ const Relatorio = () => {
                 <em>Selecione um paciente</em>
               </MenuItem>
               {pacientes.map((paciente) => (
-                <MenuItem key={paciente.id} value={paciente.id}>
+                <MenuItem key={paciente.id} value={paciente.nome}>
                   {paciente.nome}
                 </MenuItem>
               ))}
