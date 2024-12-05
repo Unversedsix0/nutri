@@ -39,7 +39,27 @@ const PlannerMensal = () => {
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
+  const [isEditing, setIsEditing] = useState(false); // Para rastrear se estamos editando
+  const [editIndex, setEditIndex] = useState(null); // Índice do atendimento a ser editado
 
+  const handleDelete = (index) => {
+    const updatedAttendances = [...attendances];
+    updatedAttendances.splice(index, 1); // Remove o atendimento pelo índice
+    setAttendances(updatedAttendances);
+
+  const updatedDates = new Set(updatedAttendances.map((attendance) => attendance.taskDate));
+  setAttendedDates(updatedDates);
+
+      // Verifica se ainda há atendimentos na data selecionada
+  const remainingAttendancesForDay = updatedAttendances.filter(
+    (attendance) => attendance.taskDate === format(selectedDay, 'yyyy-MM-dd')
+  );
+
+  if (remainingAttendancesForDay.length === 0) {
+    closeModal(); // Fecha o modal
+  }
+};
+ 
   const changeMonth = (offset) => {
     setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
   };
@@ -205,6 +225,21 @@ const PlannerMensal = () => {
                         primary={`Nome: ${attendance.taskName}`}
                         secondary={`Hora: ${attendance.taskTime} | Status: ${attendance.status} | Notas: ${attendance.taskNotes}`}
                       />
+                          {/* Botão Editar */}
+                <Button
+                  onClick={() => handleEdit(index)} // Chama a função de edição com o índice do atendimento
+                  color="primary"
+                  sx={{ marginRight: 1 }}
+                >
+                  Editar
+                </Button>
+                {/* Botão Deletar */}
+                <Button
+                  onClick={() => handleDelete(index)} // Chama a função de exclusão com o índice do atendimento
+                  color="error"
+                >
+                  Deletar
+                </Button>
                     </ListItem>
                   ))}
               </List>
