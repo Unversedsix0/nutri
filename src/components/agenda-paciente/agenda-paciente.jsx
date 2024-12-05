@@ -26,8 +26,9 @@ import {
 
 const PlannerMensal = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [plannerData, setPlannerData] = useState({});
+  const [attendances, setAttendances] = useState([]); // Guardando os atendimentos
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewingAttendances, setIsViewingAttendances] = useState(false); // Novo estado para verificar se estamos visualizando atendimentos
   const [formData, setFormData] = useState({
     taskName: '',
     taskDate: '',
@@ -37,60 +38,7 @@ const PlannerMensal = () => {
   });
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [attendances, setAttendances] = useState([]);
   const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
-  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
-
-  // Variáveis de estado
-  const [editingIndex, setEditingIndex] = useState(null); // Índice do atendimento sendo editado
-
-  // Função para abrir o modal de edição
-  const handleEdit = (index) => {
-    setFormData(attendances[index]); // Preenche o formulário com os dados existentes
-    setEditingIndex(index); // Define o índice do atendimento sendo editado
-    setIsModalOpen(true); // Abre o modal
-  };
-
-  // Função para salvar o atendimento
-  const handleSave = (e) => {
-    e.preventDefault();
-
-    if (editingIndex !== null) {
-      // Atualiza o atendimento existente
-      const updatedAttendances = [...attendances];
-      updatedAttendances[editingIndex] = formData;
-      setAttendances(updatedAttendances);
-    } else {
-      // Cria um novo atendimento
-      setAttendances([...attendances, formData]);
-      handleHighlightDate(formData.taskDate, formData.status);
-    }
-
-    // Fecha o modal e reseta o formulário
-    setIsModalOpen(false);
-    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
-    setEditingIndex(null); // Reseta o índice de edição
-  };
-
-
-  // Função para deletar um atendimento
-  const handleDelete = (index) => {
-    const updatedAttendances = attendances.filter((_, i) => i !== index); // Remove pelo índice
-    setAttendances(updatedAttendances);
-
-    // Remove destaque do calendário se não houver mais atendimentos
-    const remainingDates = updatedAttendances.map((attendance) => attendance.taskDate);
-    setAttendedDates(new Set(remainingDates));
-
-  };
-  const fetchData = async () => {
-    // Simulando carregamento de dados
-    setPlannerData({});
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const changeMonth = (offset) => {
     setCurrentMonth(offset > 0 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1));
@@ -102,9 +50,9 @@ const PlannerMensal = () => {
     setContextMenu(
       contextMenu === null
         ? {
-          mouseX: event.clientX - 2,
-          mouseY: event.clientY - 4,
-        }
+            mouseX: event.clientX - 2,
+            mouseY: event.clientY - 4,
+          }
         : null
     );
   };
@@ -128,30 +76,39 @@ const PlannerMensal = () => {
       taskDate: format(date, 'yyyy-MM-dd'),
       taskTime: '',
       taskNotes: '',
+      status: '',
     });
     setIsModalOpen(true);
+    setIsViewingAttendances(false); // Assegura que o modal está no estado de "novo atendimento"
   };
-  // Fecha o modal
+
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '' });
+    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '', status: '' });
   };
 
-  // Função para destacar datas atendidas
-  const handleHighlightDate = (date) => {
-    setAttendedDates((prevAttendedDates) => new Set([...prevAttendedDates, date]));
-  };
-
-  const openAttendanceModal = (day) => {
-    const dayAttendances = attendances.filter(
-      (attendance) => attendance.taskDate === format(day, 'yyyy-MM-dd')
+  const openAttendanceModal = (date) => {
+    const todaysAttendances = attendances.filter(
+      (attendance) => attendance.taskDate === format(date, 'yyyy-MM-dd')
     );
-    setAttendances(dayAttendances); // Atualiza com os atendimentos do dia
-    setIsAttendanceModalOpen(true);
+    setIsViewingAttendances(true);
+    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '', status: '' });
+    setSelectedDay(date);
+    setIsModalOpen(true); // Abre o modal para visualizar atendimentos
   };
 
-  const closeAttendanceModal = () => {
-    setIsAttendanceModalOpen(false);
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    // Adiciona um novo atendimento na lista
+    setAttendances((prevAttendances) => {
+      const newAttendances = [...prevAttendances, formData];
+      // Atualiza as datas com atendimentos
+      setAttendedDates(new Set(newAttendances.map((attendance) => attendance.taskDate)));
+      return newAttendances;
+    });
+
+    closeModal(); // Fecha o modal e limpa os dados do formulário
   };
 
   const renderDays = () => {
@@ -195,6 +152,7 @@ const PlannerMensal = () => {
     return days;
   };
 
+
   return (
     <Container sx={{ marginTop: 4 }}>
       <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 3 }}>
@@ -234,104 +192,85 @@ const PlannerMensal = () => {
       <Dialog open={isModalOpen} onClose={closeModal} maxWidth="sm" fullWidth>
         <form onSubmit={handleSave}>
           <Typography variant="h6" align="center" sx={{ marginTop: 2, fontWeight: 'bold' }}>
-            Novo Atendimento
+            {isViewingAttendances ? 'Atendimentos de ' + format(selectedDay, 'dd/MM/yyyy') : 'Novo Atendimento'}
           </Typography>
           <Container sx={{ padding: 3 }}>
-            <TextField
-              label="Nome do Atendimento"
-              value={formData.taskName}
-              onChange={(e) => setFormData({ ...formData, taskName: e.target.value })}
-              fullWidth
-              required
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Data"
-              type="date"
-              value={formData.taskDate}
-              onChange={(e) => setFormData({ ...formData, taskDate: e.target.value })}
-              fullWidth
-              required
-              InputLabelProps={{ shrink: true }}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Horário"
-              type="time"
-              value={formData.taskTime}
-              onChange={(e) => setFormData({ ...formData, taskTime: e.target.value })}
-              fullWidth
-              required
-              InputLabelProps={{ shrink: true }}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Notas"
-              value={formData.taskNotes}
-              onChange={(e) => setFormData({ ...formData, taskNotes: e.target.value })}
-              fullWidth
-              multiline
-              rows={4}
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              label="Status"
-              select
-              value={formData.status || ''}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              fullWidth
-              required
-              sx={{ marginBottom: 2 }}
-            >
-              <MenuItem value=""></MenuItem>
-              <MenuItem value="aguardando">Aguardando Confirmação</MenuItem>
-              <MenuItem value="confirmado">Confirmar Agendamento</MenuItem>
-            </TextField>
+            {isViewingAttendances ? (
+              <List>
+                {attendances
+                  .filter((attendance) => attendance.taskDate === format(selectedDay, 'yyyy-MM-dd'))
+                  .map((attendance, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={`Nome: ${attendance.taskName}`}
+                        secondary={`Hora: ${attendance.taskTime} | Status: ${attendance.status} | Notas: ${attendance.taskNotes}`}
+                      />
+                    </ListItem>
+                  ))}
+              </List>
+            ) : (
+              <>
+                <TextField
+                  label="Nome do Atendimento"
+                  value={formData.taskName}
+                  onChange={(e) => setFormData({ ...formData, taskName: e.target.value })}
+                  fullWidth
+                  required
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Data"
+                  type="date"
+                  value={formData.taskDate}
+                  onChange={(e) => setFormData({ ...formData, taskDate: e.target.value })}
+                  fullWidth
+                  required
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Horário"
+                  type="time"
+                  value={formData.taskTime}
+                  onChange={(e) => setFormData({ ...formData, taskTime: e.target.value })}
+                  fullWidth
+                  required
+                  InputLabelProps={{ shrink: true }}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Notas"
+                  value={formData.taskNotes}
+                  onChange={(e) => setFormData({ ...formData, taskNotes: e.target.value })}
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                />
+                {/* Botões para selecionar o status */}
+                <div>
+                  <Button
+                    variant={formData.status === 'Aguardando Confirmação' ? 'contained' : 'outlined'}
+                    color="warning"
+                    onClick={() => setFormData({ ...formData, status: 'Aguardando Confirmação' })}
+                    sx={{ marginRight: 2 }}
+                  >
+                    Aguardando Confirmação
+                  </Button>
+                  <Button
+                    variant={formData.status === 'Confirmar Agendamento' ? 'contained' : 'outlined'}
+                    color="success"
+                    onClick={() => setFormData({ ...formData, status: 'Confirmar Agendamento' })}
+                  >
+                    Confirmar Agendamento
+                  </Button>
+                </div>
 
-            <Button type="submit" variant="contained" color="primary" fullWidth >
-              Salvar
-            </Button>
+                <Button variant="contained" type="submit" fullWidth sx={{ marginTop: 2 }}>
+                  Salvar Atendimento
+                </Button>
+              </>
+            )}
           </Container>
         </form>
-      </Dialog>
-
-      {/* Modal para visualizar atendimentos */}
-      <Dialog open={isAttendanceModalOpen} onClose={closeAttendanceModal} maxWidth="sm" fullWidth>
-        <Typography variant="h6" align="center" sx={{ marginTop: 2, fontWeight: 'bold' }}>
-          Atendimentos do Dia
-        </Typography>
-        <List>
-          {attendances.map((attendance, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={attendance.taskName}
-                secondary={`Hora: ${attendance.taskTime} - Notas: ${attendance.taskNotes}`}
-              />
-              {/* Status como Typography */}
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: attendance.status === 'confirmado' ? 'green' : 'orange',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  marginTop: 5,
-                  pointerEvents: 'none', // Desativa cliques
-                }}
-              >
-                {attendance.status === 'confirmado' ? 'Confirmado' : 'Aguardando'}
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => handleDelete(index)} fullWidth sx={{ marginTop: 5, width: '40px' }}>
-                Deletar
-              </Button>
-              <Button variant="contained" color="primary" onClick={() => handleEdit(index)} fullWidth sx={{ marginTop: 5, width: '40px' }}>
-                Editar
-              </Button>
-            </ListItem>
-          ))}
-        </List>
-        <Button variant="contained" color="primary" onClick={closeAttendanceModal} fullWidth sx={{ marginTop: 5 }}>
-          Fechar
-        </Button>
       </Dialog>
     </Container>
   );
