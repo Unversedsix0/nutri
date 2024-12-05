@@ -10,6 +10,7 @@ export const LoginPage = lazy(() => import('src/pages/login'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const AgendaPage = lazy(() => import('src/pages/agenda'));
 export const RelatorioPage = lazy(() => import('src/pages/relatorio'));
+export const RegisterPage = lazy(() => import('src/pages/register'));
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'financeiro', element: <FinanPage /> },
         { path: 'agenda', element: <AgendaPage /> },
         { path: 'relatorio', element: <RelatorioPage /> },
+        
       ],
     },
     {
@@ -42,6 +44,10 @@ export default function Router() {
     {
       path: '*',
       element: <Navigate to="/404" replace />,
+    },
+    {
+      path: 'register',
+      element: <RegisterPage />,
     },
   ]);
 

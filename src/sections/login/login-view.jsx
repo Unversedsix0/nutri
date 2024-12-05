@@ -71,13 +71,7 @@ export default function LoginView() {
           }}
         />
       </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Esqueceu a senha?
-        </Link>
-      </Stack>
-
+      
       <LoadingButton
         fullWidth
         size="large"
@@ -121,7 +115,7 @@ export default function LoginView() {
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Não tem uma conta?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }} underline="hover">
+            <Link href="/register" variant="subtitle2" sx={{ ml: 0.5 }} underline="hover">
               Registre-se
             </Link>
           </Typography>
