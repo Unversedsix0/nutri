@@ -39,7 +39,6 @@ const PlannerMensal = () => {
   const [contextMenu, setContextMenu] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
-  const [isEditing, setIsEditing] = useState(false); // Para rastrear se estamos editando
   const [editIndex, setEditIndex] = useState(null); // Índice do atendimento a ser editado
 
   const handleDelete = (index) => {
@@ -58,6 +57,14 @@ const PlannerMensal = () => {
   if (remainingAttendancesForDay.length === 0) {
     closeModal(); // Fecha o modal
   }
+};
+const handleEdit = (index) => {
+  const attendanceToEdit = attendances[index]; // Obtemos o atendimento a ser editado
+  openModal(index);
+  setFormData(attendanceToEdit); // Preenchemos o formulário com os dados existentes
+  setEditIndex(index); // Armazenamos o índice do atendimento que está sendo editado
+  attendances.splice(index,1);
+  
 };
  
   const changeMonth = (offset) => {
