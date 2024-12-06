@@ -17,6 +17,7 @@ import { bgGradient } from "src/theme/css";
 
 import Logo from "src/components/logo";
 import Iconify from "src/components/iconify";
+import { LoginService } from "src/service/login";
 
 export default function RegisterView() {
   const theme = useTheme();
@@ -48,7 +49,7 @@ export default function RegisterView() {
 
   const handleClick = () => {
     console.log("Form Data:", formData);
-    router.push("/login");
+    LoginService.register(formData);
   };
 
   const renderForm = (
