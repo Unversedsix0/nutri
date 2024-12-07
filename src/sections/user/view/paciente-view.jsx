@@ -171,6 +171,7 @@ export default function PacientePage({pacientes}) {
                       company={row.company}
                       avatarUrl={row.avatarUrl}
                       email={row.email}
+                      paciente={row}
                       selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
                     />
