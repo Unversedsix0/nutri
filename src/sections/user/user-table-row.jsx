@@ -13,6 +13,7 @@ import IconButton from '@mui/material/IconButton';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import ModalPaciente from 'src/components/modal-paciente';
 
 
 import { PacienteService } from 'src/service/paciente';
@@ -27,12 +28,22 @@ export default function UserTableRow({
   email,
   status,
   handleClick,
+  paciente
 }) {
   const [open, setOpen] = useState(null);
-
+  const [openModal, setOpenModal] = useState(null);
+  const [users, setUsers] = useState([{}]);
+  const handleOpen = () =>{ setOpenModal(true);console.log('paciente',paciente) }   // Função para abrir o modal
+  const handleClose = () => setOpenModal(false); // Função para fechar o modal
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
+
+     const parentToChild = (dataFormulario) => {
+    console.log('estou aqui...')
+    PacienteService.insertData(dataFormulario)
+    setUsers([...users, dataFormulario]);
+  }
 
   const handleCloseMenu = () => {
     setOpen(null);
@@ -84,7 +95,7 @@ export default function UserTableRow({
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleOpen}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -94,6 +105,7 @@ export default function UserTableRow({
           Delete
         </MenuItem>
       </Popover>
+      <ModalPaciente open = {openModal} handleClose={handleClose} parentToChild={parentToChild} />
     </>
   );
 }
@@ -107,4 +119,5 @@ UserTableRow.propTypes = {
   name: PropTypes.any,
   selected: PropTypes.any,
   status: PropTypes.string,
+  paciente: PropTypes.any
 };

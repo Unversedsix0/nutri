@@ -22,30 +22,18 @@ const getByCPF = async (cpf) => {
 
   return data;
 };
-const insertData = async (paciente) => {
-  const { data } = await api.from(ROTA).insert([
-    {
-      id_consultorio: paciente.id_consultorio,
-      id_estado_civil: paciente.id_estado_civil,
-      id_endereco: paciente.id_endereco,
-      nome: paciente.nome,
-      cpf: paciente.cpf,
-      rg: paciente.rg,
-      telefone: paciente.telefone,
-      celular: paciente.celular,
-      profissao: paciente.profissao,
-      email: paciente.email,
-      nome_mae: paciente.nome_mae,
-      nome_pai: paciente.nome_pai,
-      dt_nascimento: paciente.dt_nascimento,
-      status: true,
-      id_sexo: paciente.id_sexo,
-      peso: paciente.peso,
-      altura:paciente.altura
-    },
-  ]);
-  console.log('insertData - data', data);
+const insertData = async (json_paciente) => {
+  const { data, error } = await api.rpc('registro_paciente', { json_paciente });
+
+  if (error) {
+    console.error('Erro ao chamar a procedure:', error.message);
+    return null;
+  }
+
+  console.log('Resultado da procedure:', data);
+  return data;
 };
+
 
 const deleteByID = async (idUsuario) => {
 

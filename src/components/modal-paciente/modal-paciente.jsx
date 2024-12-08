@@ -32,7 +32,7 @@ const style = {
 };
 
 export default function ModalPaciente(props) {
-  const { open, handleClose, parentToChild} = props;
+  const { open, handleClose, parentToChild, paciente} = props;
   const { control, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
@@ -206,9 +206,8 @@ export default function ModalPaciente(props) {
                     error={!!errors.sexo}
                   >
                 
-                    <MenuItem value="male">Masculino</MenuItem>
-                    <MenuItem value="female">Feminino</MenuItem>
-                    <MenuItem value="other">Outro</MenuItem>
+                    <MenuItem value="1">Masculino</MenuItem>
+                    <MenuItem value="2">Feminino</MenuItem>
                   </Select>
                   {errors.sexo && <Typography color="error">{errors.sexo.message}</Typography>}
                 </FormControl>
@@ -228,11 +227,10 @@ export default function ModalPaciente(props) {
                     displayEmpty
                     error={!!errors.estadoCivil}
                   >
-             
-                    <MenuItem value="solteiro">Solteiro</MenuItem>
-                    <MenuItem value="casado">Casado</MenuItem>
-                    <MenuItem value="divorciado">Divorciado</MenuItem>
-                    <MenuItem value="viuvo">Viúvo</MenuItem>
+                    <MenuItem value="1">Solteiro</MenuItem>
+                    <MenuItem value="2">Casado</MenuItem>
+                    <MenuItem value="4">Divorciado</MenuItem>
+                    <MenuItem value="5">Viúvo</MenuItem>
                   </Select>
                   {errors.estadoCivil && <Typography color="error">{errors.estadoCivil.message}</Typography>}
                 </FormControl>
@@ -264,6 +262,42 @@ export default function ModalPaciente(props) {
               />
             )}
           />
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+  <Controller
+    name="telefone"
+    control={control}
+    defaultValue=""
+    rules={{
+      required: 'Telefone é obrigatório',
+      pattern: {
+        value: /^\(\d{2}\) \d{4,5}-\d{4}$/,
+        message: 'Telefone deve estar no formato (99) 99999-9999',
+      },
+    }}
+    render={({ field }) => (
+      <FormControl fullWidth margin="normal" variant="outlined">
+        <InputMask
+          mask="(99) 99999-9999"
+          {...field}
+        >
+          {(inputProps) => (
+            <TextField
+              {...inputProps}
+              id="telefone"
+              variant="outlined"
+              label="Telefone"
+              required
+              InputLabelProps={{ shrink: true }}
+              error={!!errors.telefone}
+              helperText={errors.telefone ? errors.telefone.message : ''}
+            />
+          )}
+        </InputMask>
+      </FormControl>
+    )}
+  />
+</Stack>
+
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Controller
               name="cep"
