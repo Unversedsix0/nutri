@@ -8,7 +8,7 @@ export default function AppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | EatWise</title>
+        <title> Página Inicial | EatWise</title>
       </Helmet>
 
       <AppView />

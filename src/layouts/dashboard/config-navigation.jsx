@@ -20,12 +20,12 @@ const navConfig = [
   {
     title: 'Agenda',
     path: '/agenda',
-    icon: icon('ic_blog'),
+    icon: icon('agenda'),
   },
   {
     title: 'Relatórios',
     path: '/relatorio',
-    icon: icon('ic_blog'),
+    icon: icon('relatorio'),
   },
 ];
 
