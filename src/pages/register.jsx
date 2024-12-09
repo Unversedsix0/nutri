@@ -8,7 +8,7 @@ export default function RegisterPage() {
   return (
     <>
       <Helmet>
-        <title> Register | EatWise </title>
+        <title> Registre-se | EatWise </title>
       </Helmet>
 
       <RegisterView />

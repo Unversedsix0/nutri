@@ -7,7 +7,7 @@ export default function RelatorioPage() {
   return (
     <>
       <Helmet>
-        <title> Relatório | EatWise </title>
+        <title> Relatórios | EatWise </title>
       </Helmet>
       <Home/>
     </>

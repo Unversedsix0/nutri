@@ -24,7 +24,7 @@ export default function PacientePage() {
   return (
     <>
       <Helmet>
-        <title> Paciente | Minimal UI </title>
+        <title> Paciente | EatWise </title>
       </Helmet>
 
       <PacienteView pacientes = {pacientes} />

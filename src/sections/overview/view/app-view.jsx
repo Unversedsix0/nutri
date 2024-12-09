@@ -35,7 +35,7 @@ export default function AppView() {
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Confirmados Da Semana"
+            title="Confirmados do Dia"
             total={1}
             color="success"
            
@@ -44,8 +44,8 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Novos Pacientes da Semana"
-            total={5}
+            title="Novos Pacientes do Dia"
+            total={1}
             color="info"
             
           />
@@ -53,8 +53,8 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Marcações da Semana"
-            total={12}
+            title="Marcações do Dia"
+            total={2}
             color="warning"
            
           />
@@ -62,8 +62,8 @@ export default function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Aguardando na Semana"
-            total={30}
+            title="Aguardando do Dia"
+            total={2}
             color="error"
             
           />
