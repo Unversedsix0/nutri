@@ -46,8 +46,10 @@ export default function ModalPaciente(props) {
 
   const onSubmit = (data) => {
     console.log('Dados do formulário:', data);
-    parentToChild(data,isEdit);
+    parentToChild(data);
   };
+
+  
 
   return (
     <Modal
@@ -348,20 +350,20 @@ export default function ModalPaciente(props) {
           </Stack>
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Controller
-              name="bairro"
+              name="cidade"
               control={control}
               defaultValue=""
-              rules={{ required: 'Bairro é obrigatório' }}
+              rules={{ required: 'Cidade é obrigatório' }}
               render={({ field }) => (
                 <TextField
                   {...field}
                   fullWidth
                   margin="normal"
-                  label="Bairro"
+                  label="Cidade"
                   variant="outlined"
                   required
-                  error={!!errors.bairro}
-                  helperText={errors.bairro ? errors.bairro.message : ''}
+                  error={!!errors.cidade}
+                  helperText={errors.cidade ? errors.cidade.message : ''}
                 />
               )}
             />
