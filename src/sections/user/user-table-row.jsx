@@ -39,10 +39,33 @@ export default function UserTableRow({
     setOpen(event.currentTarget);
   };
 
-     const parentToChild = (dataFormulario) => {
-    console.log('estou aqui...')
+    const parentToChild = (dataFormulario,isEdit) => {
+ if (isEdit) {
+    // Atualizar paciente
+    PacienteService.update(dataFormulario)
+      .then(() => {
+        // Atualiza a lista de usuários com os novos dados do paciente atualizado
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === dataFormulario.id ? dataFormulario : user
+          )
+        );
+        console.log('Paciente atualizado com sucesso!');
+      })
+      .catch((error) => {
+        console.error('Erro ao atualizar o paciente:', error);
+      });
+  } else {
+    // Inserir novo paciente
     PacienteService.insertData(dataFormulario)
-    setUsers([...users, dataFormulario]);
+      .then((newPaciente) => {
+        setUsers((prevUsers) => [...prevUsers, newPaciente]);
+        console.log('Novo paciente adicionado com sucesso!');
+      })
+      .catch((error) => {
+        console.error('Erro ao adicionar o paciente:', error);
+      });
+  }
   }
 
   const handleCloseMenu = () => {
@@ -105,7 +128,7 @@ export default function UserTableRow({
           Delete
         </MenuItem>
       </Popover>
-      <ModalPaciente open = {openModal} handleClose={handleClose} parentToChild={parentToChild} />
+      <ModalPaciente open = {openModal} handleClose={handleClose} parentToChild={parentToChild} paciente={paciente} isEdit />
     </>
   );
 }

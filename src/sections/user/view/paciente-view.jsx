@@ -52,10 +52,33 @@ export default function PacientePage({pacientes}) {
 
   console.log('pacientes',pacientes)
   
-   const parentToChild = (dataFormulario) => {
-    console.log('estou aqui...')
+   const parentToChild = (dataFormulario,isEdit) => {
+     if (isEdit) {
+    // Atualizar paciente
+    PacienteService.update(dataFormulario)
+      .then(() => {
+        // Atualiza a lista de usuários com os novos dados do paciente atualizado
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === dataFormulario.id ? dataFormulario : user
+          )
+        );
+        console.log('Paciente atualizado com sucesso!');
+      })
+      .catch((error) => {
+        console.error('Erro ao atualizar o paciente:', error);
+      });
+  } else {
+    // Inserir novo paciente
     PacienteService.insertData(dataFormulario)
-    setUsers([...users, dataFormulario]);
+      .then((newPaciente) => {
+        setUsers((prevUsers) => [...prevUsers, newPaciente]);
+        console.log('Novo paciente adicionado com sucesso!');
+      })
+      .catch((error) => {
+        console.error('Erro ao adicionar o paciente:', error);
+      });
+  }
   }
 
   const handleOpen = () => setOpen(true);   // Função para abrir o modal
@@ -136,11 +159,7 @@ export default function PacientePage({pacientes}) {
       </Stack>
 
       <Card>
-        <UserTableToolbar
-          numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-        />
+     
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
@@ -199,7 +218,7 @@ export default function PacientePage({pacientes}) {
         />
       </Card>
 
-      <ModalPaciente open = {open} handleClose={handleClose} parentToChild={parentToChild} />
+      <ModalPaciente open = {open} handleClose={handleClose} parentToChild={parentToChild} isEdit={false} />
 
     </Container>
   );

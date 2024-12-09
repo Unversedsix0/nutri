@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/no-extraneous-dependencies */
 // eslint-disable-next-line import/no-duplicates
-import React,{ useState } from 'react';
+import React,{ useState, useEffect  } from 'react';
 import InputMask from 'react-input-mask';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -32,14 +32,22 @@ const style = {
 };
 
 export default function ModalPaciente(props) {
-  const { open, handleClose, parentToChild, paciente} = props;
-  const { control, handleSubmit, formState: { errors } } = useForm();
+  const { open, handleClose, parentToChild, paciente, isEdit } = props;
+  const { control, handleSubmit, formState: { errors }, setValue } = useForm();
+
+  useEffect(() => {
+    if (isEdit && paciente) {
+      // Carregar os valores do paciente no formulário
+      Object.keys(paciente).forEach((key) => {
+        setValue(key, paciente[key]);
+      });
+    }
+  }, [isEdit, paciente, setValue]);
 
   const onSubmit = (data) => {
     console.log('Dados do formulário:', data);
-    parentToChild(data)
+    parentToChild(data,isEdit);
   };
- 
 
   return (
     <Modal
@@ -50,7 +58,7 @@ export default function ModalPaciente(props) {
     >
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          Adicionar Novo Paciente
+          {isEdit ? 'Editar Paciente' : 'Adicionar Novo Paciente'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
           <Controller
@@ -72,75 +80,68 @@ export default function ModalPaciente(props) {
             )}
           />
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-          <Controller
-            name="altura"
-            control={control}
-            defaultValue=""
-            rules={{
-              required: 'Altura é obrigatória',
-              pattern: {
-                value: /^[0-9]{1}\.[0-9]{2}$/,
-                message: 'Altura deve estar no formato 0.00',
-              },
-            }}
-          render={({ field }) => (
-            <FormControl fullWidth margin="normal" variant="outlined">
-              <InputMask
-                mask="9.99"
-                {...field}
-              >
-              {(inputProps) => (
-              <TextField
-                {...inputProps}
-                id="altura"
-                variant="outlined"
-                label="Altura"
-                required
-                InputLabelProps={{ shrink: true }}
-                error={!!errors.altura}
-                helperText={errors.altura ? errors.altura.message : ''}
-              />
-             )}
-        </InputMask>
-      </FormControl>
-    )}
-  />
-  <Controller
-    name="peso"
-    control={control}
-    defaultValue=""
-    rules={{
-      required: 'Peso é obrigatório',
-      pattern: {
-        value: /^[0-9]{1,3}\.[0-9]{2}$/,
-        message: 'Peso deve estar no formato 000.00',
-      },
-    }}
-    render={({ field }) => (
-      <FormControl fullWidth margin="normal" variant="outlined">
-       
-        <InputMask
-          mask="999.99"
-          {...field}
-        >
-          {(inputProps) => (
-            <TextField
-              {...inputProps}
-              id="peso"
-              variant="outlined"
-              label="Peso"
-              required
-              InputLabelProps={{ shrink: true }}
-              error={!!errors.peso}
-              helperText={errors.peso ? errors.peso.message : ''}
+            <Controller
+              name="altura"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: 'Altura é obrigatória',
+                pattern: {
+                  value: /^[0-9]{1}\.[0-9]{2}$/,
+                  message: 'Altura deve estar no formato 0.00',
+                },
+              }}
+              render={({ field }) => (
+                <FormControl fullWidth margin="normal" variant="outlined">
+                  <InputMask mask="9.99" {...field}>
+                    {(inputProps) => (
+                      <TextField
+                        {...inputProps}
+                        id="altura"
+                        variant="outlined"
+                        label="Altura"
+                        required
+                        InputLabelProps={{ shrink: true }}
+                        error={!!errors.altura}
+                        helperText={errors.altura ? errors.altura.message : ''}
+                      />
+                    )}
+                  </InputMask>
+                </FormControl>
+              )}
             />
-          )}
-        </InputMask>
-      </FormControl>
-    )}
-  />
-</Stack>
-          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Controller
+              name="peso"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: 'Peso é obrigatório',
+                pattern: {
+                  value: /^[0-9]{1,3}\.[0-9]{2}$/,
+                  message: 'Peso deve estar no formato 000.00',
+                },
+              }}
+              render={({ field }) => (
+                <FormControl fullWidth margin="normal" variant="outlined">
+                  <InputMask mask="999.99" {...field}>
+                    {(inputProps) => (
+                      <TextField
+                        {...inputProps}
+                        id="peso"
+                        variant="outlined"
+                        label="Peso"
+                        required
+                        InputLabelProps={{ shrink: true }}
+                        error={!!errors.peso}
+                        helperText={errors.peso ? errors.peso.message : ''}
+                      />
+                    )}
+                  </InputMask>
+                </FormControl>
+              )}
+            />
+          </Stack>
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Controller
               name="cpf"
               control={control}
