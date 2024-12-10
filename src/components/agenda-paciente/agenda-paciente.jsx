@@ -48,7 +48,7 @@ const PlannerMensal = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+ 
   // Função para buscar os dados e organizar por mês e dia
   const fetchData = async () => {
     const agenda = await AgendaService.getAll(); // Obtém os atendimentos
@@ -76,7 +76,7 @@ const PlannerMensal = () => {
     const updatedDates = new Set(agenda.map((task) => format(parseISO(task.taskDate), 'yyyy-MM-dd')));
     setAttendedDates(updatedDates);
   };
-  
+  console.log("caralhooo", attendances);
 
   const handleDelete = (index) => {
     const updatedAttendances = [...attendances];
@@ -171,7 +171,7 @@ const handleEdit = (index) => {
       setAttendedDates(new Set(newAttendances.map((attendance) => attendance.taskDate)));
       return newAttendances;
     });
-    AgendaService.insertData(formData);
+    AgendaService.insertData(attendances);
     closeModal(); // Fecha o modal e limpa os dados do formulário
   };
 
