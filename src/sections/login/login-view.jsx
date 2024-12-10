@@ -21,11 +21,17 @@ import { bgGradient } from 'src/theme/css';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import { Navigate } from 'react-router-dom';
+import useAuth from 'src/hooks/useAuth';
+import { LoginService } from 'src/service/login';
 
 // ----------------------------------------------------------------------
 
 export default function LoginView() {
-
+    const { setIsLogado, isLogado } = useAuth()
+    const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  });
   
   const theme = useTheme();
   
@@ -34,7 +40,25 @@ export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
   
   const handleClick = () => {
-    router.push('/dashboard');
+    console.log('Form isLogado:', isLogado);
+    const res =  LoginService.signin(formValues.email, formValues.password)
+    const userToken = localStorage.getItem("user_token");
+    
+    if(userToken){
+      setIsLogado(true);
+      Navigate("/");
+    }else{
+       setIsLogado(false);
+    }
+
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
   
   const loginGoogle = async() => {
@@ -54,12 +78,13 @@ export default function LoginView() {
   const renderForm = (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="E-mail" />
+        <TextField name="email" label="E-mail"   onChange={handleChange} />
 
         <TextField
           name="password"
           label="Senha"
           type={showPassword ? 'text' : 'password'}
+            onChange={handleChange}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -82,6 +107,7 @@ export default function LoginView() {
       >
         Entrar
       </LoadingButton>
+    
     </>
   );
 

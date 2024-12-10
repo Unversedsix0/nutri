@@ -1,5 +1,6 @@
-import { lazy, Suspense } from 'react';
+import { Children, lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import useAuth from 'src/hooks/useAuth';
 
 import DashboardLayout from 'src/layouts/dashboard';
 
@@ -13,16 +14,19 @@ export const RelatorioPage = lazy(() => import('src/pages/relatorio'));
 export const RegisterPage = lazy(() => import('src/pages/register'));
 
 // ----------------------------------------------------------------------
+const Private = ()=> {
+   const { isLogado } = useAuth()
 
+  return isLogado > 0? (<DashboardLayout>
+                    <Suspense>
+                     <Outlet />
+                    </Suspense>
+                  </DashboardLayout>) : <LoginPage />  
+}
 export default function Router() {
   const routes = useRoutes([
     {
-      element: (
-        <DashboardLayout>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+      element:( <Private/>
       ),
       children: [
         { element: <IndexPage />, index: true },

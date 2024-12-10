@@ -30,19 +30,15 @@ export default function AppView() {
 
 const fetchData = async () => {
   const getAguardandoDiaAPI = await InicioService.getAguardandoDia();
-
   setAguardandoDia(getAguardandoDiaAPI);
   
   const getConfirmadosDiaAPI = await InicioService.getConfirmadosDia();
-
   setConfirmadosDia(getConfirmadosDiaAPI);
   
   const getMarcacaoDiaAPI = await InicioService.getMarcacaoDia();
-
   setMarcacaoDia(getMarcacaoDiaAPI);
 
   const getPacientesDiaAPI = await InicioService.getPacientesDia();
-
   setPacientesDia(getPacientesDiaAPI);
 
 };
