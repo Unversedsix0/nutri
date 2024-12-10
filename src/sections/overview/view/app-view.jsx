@@ -35,15 +35,15 @@ const fetchData = async () => {
   
   const getConfirmadosDiaAPI = await InicioService.getConfirmadosDia();
 
-  setAguardandoDia(getConfirmadosDiaAPI);
+  setConfirmadosDia(getConfirmadosDiaAPI);
   
   const getMarcacaoDiaAPI = await InicioService.getMarcacaoDia();
 
-  setAguardandoDia(getMarcacaoDiaAPI);
+  setMarcacaoDia(getMarcacaoDiaAPI);
 
   const getPacientesDiaAPI = await InicioService.getPacientesDia();
 
-  setAguardandoDia(getPacientesDiaAPI);
+  setPacientesDia(getPacientesDiaAPI);
 
 };
 
