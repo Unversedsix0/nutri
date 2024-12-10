@@ -7,8 +7,10 @@ import {
   endOfMonth,
   startOfMonth,
   isSameDay,
+  parseISO,
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { AgendaService } from 'src/service/agenda';
 import {
   Grid,
   Paper,
@@ -23,6 +25,7 @@ import {
   ListItem,
   ListItemText,
 } from '@mui/material';
+
 
 const PlannerMensal = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -40,6 +43,40 @@ const PlannerMensal = () => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [attendedDates, setAttendedDates] = useState(new Set()); // Estado para armazenar datas com atendimentos
   const [editIndex, setEditIndex] = useState(null); // Índice do atendimento a ser editado
+  const [plannerData, setPlannerData] = useState({}); // Estado para armazenar os atendimentos organizados
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Função para buscar os dados e organizar por mês e dia
+  const fetchData = async () => {
+    const agenda = await AgendaService.getAll(); // Obtém os atendimentos
+    const updatedPlannerData = {};
+
+    agenda.forEach((task) => {
+      const taskDate = parseISO(task.taskDate); // Converte a data para formato Date
+      const monthKey = format(taskDate, 'yyyy-MM'); // Formato de chave para ano e mês (yyyy-MM)
+      const day = taskDate.getDate(); // Extraí o dia do mês
+
+      // Organiza os dados no formato desejado
+      if (!updatedPlannerData[monthKey]) {
+        updatedPlannerData[monthKey] = {}; // Cria um novo mês se não existir
+      }
+      if (!updatedPlannerData[monthKey][day]) {
+        updatedPlannerData[monthKey][day] = []; // Cria um novo array para o dia se não existir
+      }
+      updatedPlannerData[monthKey][day].push(task); // Adiciona o atendimento ao dia
+    });
+
+    // Atualiza o estado com os dados organizados
+    setPlannerData(updatedPlannerData);
+
+    // Atualiza o estado das datas atendidas
+    const updatedDates = new Set(agenda.map((task) => format(parseISO(task.taskDate), 'yyyy-MM-dd')));
+    setAttendedDates(updatedDates);
+  };
+  
 
   const handleDelete = (index) => {
     const updatedAttendances = [...attendances];
@@ -134,7 +171,7 @@ const handleEdit = (index) => {
       setAttendedDates(new Set(newAttendances.map((attendance) => attendance.taskDate)));
       return newAttendances;
     });
-
+    AgendaService.insertData(formData);
     closeModal(); // Fecha o modal e limpa os dados do formulário
   };
 
@@ -306,7 +343,7 @@ const handleEdit = (index) => {
                   </Button>
                 </div>
 
-                <Button variant="contained" type="submit" fullWidth sx={{ marginTop: 2 }}>
+                <Button onClick={handleSave} variant="contained" type="submit" fullWidth sx={{ marginTop: 2 }}>
                   Salvar Atendimento
                 </Button>
               </>
