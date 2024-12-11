@@ -97,10 +97,10 @@ export default function AccountPopover(props) {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {user.full_name}
+            {user.full_name }
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user.email}
+            {user.email ||  JSON.parse(localStorage.getItem("user_token")).email}
           </Typography>
         </Box>
 
