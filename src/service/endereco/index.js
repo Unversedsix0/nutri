@@ -14,7 +14,14 @@ const getByID = async (id) => {
 };
 
 const getByIDPaciente = async (id_paciente) => {
-  const { data } = await api.from(ROTA).select(id_paciente);
+  const { data, error } = await api.rpc('get_endereco_paciente ', { id_paciente });
+
+  if (error) {
+    console.error('Erro ao chamar a procedure:', error.message);
+    return null;
+  }
+
+  console.log('Resultado da procedure:', data);
   return data;
 };
 

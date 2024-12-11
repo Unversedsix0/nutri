@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import Stack from '@mui/material/Stack';
@@ -17,6 +17,7 @@ import ModalPaciente from 'src/components/modal-paciente';
 
 
 import { PacienteService } from 'src/service/paciente';
+import { EnderecoService } from 'src/service/endereco';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
@@ -31,6 +32,7 @@ export default function UserTableRow({
   paciente
 }) {
   const [open, setOpen] = useState(null);
+  const [ endereco , setEndereco] = useState();
   const [openModal, setOpenModal] = useState(null);
   const [users, setUsers] = useState([{}]);
   const handleOpen = () =>{ setOpenModal(true);console.log('paciente',paciente) }   // Função para abrir o modal
@@ -38,6 +40,18 @@ export default function UserTableRow({
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
+
+const fetchData = async () => {
+  const pacientesAPI = await EnderecoService.getByIDPaciente(id)
+  
+  setEndereco(pacientesAPI);
+};
 
     const parentToChild = (dataFormulario,isEdit) => {
  if (isEdit) {
@@ -93,7 +107,7 @@ export default function UserTableRow({
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{paciente.telefone}</TableCell>
 
         <TableCell>{email}</TableCell>
 
@@ -128,7 +142,7 @@ export default function UserTableRow({
           Delete
         </MenuItem>
       </Popover>
-      <ModalPaciente open = {openModal} handleClose={handleClose} parentToChild={parentToChild} paciente={paciente} isEdit />
+      <ModalPaciente open = {openModal} handleClose={handleClose} parentToChild={parentToChild} paciente={paciente} endereco={endereco} isEdit />
     </>
   );
 }

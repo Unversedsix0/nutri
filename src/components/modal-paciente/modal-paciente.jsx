@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
+import { EnderecoService } from 'src/service/endereco';
 
 const style = {
   position: 'absolute',
@@ -32,17 +33,17 @@ const style = {
 };
 
 export default function ModalPaciente(props) {
-  const { open, handleClose, parentToChild, paciente, isEdit } = props;
+  const { open, handleClose, parentToChild, paciente, isEdit, endereco } = props;
   const { control, handleSubmit, formState: { errors }, setValue } = useForm();
 
   useEffect(() => {
     if (isEdit && paciente) {
-      // Carregar os valores do paciente no formulário
-      Object.keys(paciente).forEach((key) => {
-        setValue(key, paciente[key]);
+      const pacienteComEndereco = { ...paciente, ...endereco };
+      Object.keys(pacienteComEndereco).forEach((key) => {
+        setValue(key, pacienteComEndereco[key]);
       });
     }
-  }, [isEdit, paciente, setValue]);
+  }, [isEdit, paciente, endereco, setValue]);
 
   const onSubmit = (data) => {
     console.log('Dados do formulário:', data);
@@ -63,7 +64,7 @@ export default function ModalPaciente(props) {
           {isEdit ? 'Editar Paciente' : 'Adicionar Novo Paciente'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
-          <Controller
+          {!isEdit&&<Controller
             name="nome"
             control={control}
             defaultValue=""
@@ -80,7 +81,7 @@ export default function ModalPaciente(props) {
                 required
               />
             )}
-          />
+          />}
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Controller
               name="altura"
@@ -144,7 +145,7 @@ export default function ModalPaciente(props) {
             />
           </Stack>
             <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Controller
+            {!isEdit&&<Controller
               name="cpf"
               control={control}
               defaultValue=""
@@ -171,8 +172,8 @@ export default function ModalPaciente(props) {
                   </InputMask>
                 </FormControl>
               )}
-            />
-            <Controller
+            />}
+            {!isEdit&&<Controller
               name="dataNascimento"
               control={control}
               defaultValue=""
@@ -191,10 +192,10 @@ export default function ModalPaciente(props) {
                   helperText={errors.dataNascimento ? errors.dataNascimento.message : ''}
                 />
               )}
-            />
+            />}
           </Stack>
           <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Controller
+            {!isEdit&&<Controller
               name="sexo"
               control={control}
               defaultValue=""
@@ -215,8 +216,8 @@ export default function ModalPaciente(props) {
                   {errors.sexo && <Typography color="error">{errors.sexo.message}</Typography>}
                 </FormControl>
               )}
-            />
-            <Controller
+            />}
+            {!isEdit&&<Controller
               name="estadoCivil"
               control={control}
               defaultValue=""
@@ -238,7 +239,7 @@ export default function ModalPaciente(props) {
                   {errors.estadoCivil && <Typography color="error">{errors.estadoCivil.message}</Typography>}
                 </FormControl>
               )}
-            />
+            />}
           </Stack>
           <Controller
             name="email"

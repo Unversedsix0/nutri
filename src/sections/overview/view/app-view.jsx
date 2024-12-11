@@ -24,6 +24,10 @@ export default function AppView() {
   const [marcacaoDia, setMarcacaoDia] = useState(0);
   const [pacientesDia, setPacientesDia] = useState(0);
 
+  // console.log("confirmados", confirmadosDia);
+  // console.log("aguardando", aguardandoDia);
+  // console.log("marcacao", marcacaoDia);
+  // console.log("pacientes", pacientesDia);
   useEffect(() => {
     fetchData();
   }, []);
