@@ -93,7 +93,7 @@ export default function UserTableRow({
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{paciente.telefone}</TableCell>
 
         <TableCell>{email}</TableCell>
 

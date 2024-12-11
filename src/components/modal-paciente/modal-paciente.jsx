@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
 import FormControl from '@mui/material/FormControl';
+import { EnderecoService } from 'src/service/endereco';
 
 const style = {
   position: 'absolute',
