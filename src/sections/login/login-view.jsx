@@ -49,6 +49,7 @@ export default function LoginView() {
       Navigate("/");
     }else{
        setIsLogado(false);
+       window.alert('Usuário e/ou senha incorretos!');
     }
 
   };
