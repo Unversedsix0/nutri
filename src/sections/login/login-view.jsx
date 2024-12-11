@@ -40,7 +40,7 @@ export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
   
   const handleClick = () => {
-    console.log('Form isLogado:', isLogado);
+  
     const res =  LoginService.signin(formValues.email, formValues.password)
     const userToken = localStorage.getItem("user_token");
     

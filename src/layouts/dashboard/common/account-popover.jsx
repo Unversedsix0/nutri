@@ -48,7 +48,8 @@ export default function AccountPopover(props) {
   };
 
   async function signOutUser() {
-    const { error } = await api.auth.signOut();
+     localStorage.removeItem("user_token");
+   
     Navigate("/login");
   }
 

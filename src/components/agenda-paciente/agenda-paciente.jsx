@@ -33,10 +33,10 @@ const PlannerMensal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewingAttendances, setIsViewingAttendances] = useState(false); // Novo estado para verificar se estamos visualizando atendimentos
   const [formData, setFormData] = useState({
-    taskName: '',
-    taskDate: '',
-    taskTime: '',
-    taskNotes: '',
+    tarefa: '',
+    data: '',
+    hora: '',
+    descricao: '',
     status: '',
   });
   const [contextMenu, setContextMenu] = useState(null);
@@ -53,11 +53,13 @@ const PlannerMensal = () => {
   const fetchData = async () => {
     const agenda = await AgendaService.getAll(); // Obtém os atendimentos
     const updatedPlannerData = {};
+    console.log('agenda',agenda)
+    setAttendances(agenda)
 
     agenda.forEach((task) => {
-      const taskDate = parseISO(task.taskDate); // Converte a data para formato Date
-      const monthKey = format(taskDate, 'yyyy-MM'); // Formato de chave para ano e mês (yyyy-MM)
-      const day = taskDate.getDate(); // Extraí o dia do mês
+      const data = parseISO(task.data); // Converte a data para formato Date
+      const monthKey = format(data, 'yyyy-MM'); // Formato de chave para ano e mês (yyyy-MM)
+      const day = data.getDate(); // Extraí o dia do mês
 
       // Organiza os dados no formato desejado
       if (!updatedPlannerData[monthKey]) {
@@ -73,22 +75,22 @@ const PlannerMensal = () => {
     setPlannerData(updatedPlannerData);
 
     // Atualiza o estado das datas atendidas
-    const updatedDates = new Set(agenda.map((task) => format(parseISO(task.taskDate), 'yyyy-MM-dd')));
+    const updatedDates = new Set(agenda.map((task) => format(parseISO(task.data), 'yyyy-MM-dd')));
     setAttendedDates(updatedDates);
   };
-  console.log("caralhooo", attendances);
+  
 
   const handleDelete = (index) => {
     const updatedAttendances = [...attendances];
     updatedAttendances.splice(index, 1); // Remove o atendimento pelo índice
     setAttendances(updatedAttendances);
 
-  const updatedDates = new Set(updatedAttendances.map((attendance) => attendance.taskDate));
+  const updatedDates = new Set(updatedAttendances.map((attendance) => attendance.data));
   setAttendedDates(updatedDates);
 
       // Verifica se ainda há atendimentos na data selecionada
   const remainingAttendancesForDay = updatedAttendances.filter(
-    (attendance) => attendance.taskDate === format(selectedDay, 'yyyy-MM-dd')
+    (attendance) => attendance.data === format(selectedDay, 'yyyy-MM-dd')
   );
 
   if (remainingAttendancesForDay.length === 0) {
@@ -130,16 +132,18 @@ const handleEdit = (index) => {
     if (option === 'novoAtendimento') {
       openModal(selectedDay);
     } else if (option === 'visualizarAtendimentos') {
+       console.log('attendances',attendances)
       openAttendanceModal(selectedDay);
     }
   };
 
   const openModal = (date = null) => {
     setFormData({
-      taskName: '',
-      taskDate: format(date, 'yyyy-MM-dd'),
-      taskTime: '',
-      taskNotes: '',
+      id_consultorio:1,
+      tarefa: '',
+      data: format(date, 'yyyy-MM-dd'),
+      hora: '',
+      descricao: '',
       status: '',
     });
     setIsModalOpen(true);
@@ -148,15 +152,15 @@ const handleEdit = (index) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '', status: '' });
+    setFormData({ tarefa: '', data: '', hora: '', descricao: '', status: '',id_consultorio:'' });
   };
 
   const openAttendanceModal = (date) => {
     const todaysAttendances = attendances.filter(
-      (attendance) => attendance.taskDate === format(date, 'yyyy-MM-dd')
+      (attendance) => attendance.data === format(date, 'yyyy-MM-dd')
     );
     setIsViewingAttendances(true);
-    setFormData({ taskName: '', taskDate: '', taskTime: '', taskNotes: '', status: '' });
+    setFormData({ tarefa: '', data: '', hora: '', descricao: '', status: '', id_consultorio:'' });
     setSelectedDay(date);
     setIsModalOpen(true); // Abre o modal para visualizar atendimentos
   };
@@ -168,10 +172,11 @@ const handleEdit = (index) => {
     setAttendances((prevAttendances) => {
       const newAttendances = [...prevAttendances, formData];
       // Atualiza as datas com atendimentos
-      setAttendedDates(new Set(newAttendances.map((attendance) => attendance.taskDate)));
+      setAttendedDates(new Set(newAttendances.map((attendance) => attendance.data)));
+     
       return newAttendances;
     });
-    AgendaService.insertData(attendances);
+    AgendaService.insertData(formData);
     closeModal(); // Fecha o modal e limpa os dados do formulário
   };
 
@@ -262,12 +267,12 @@ const handleEdit = (index) => {
             {isViewingAttendances ? (
               <List>
                 {attendances
-                  .filter((attendance) => attendance.taskDate === format(selectedDay, 'yyyy-MM-dd'))
+                  .filter((attendance) => attendance.data === format(selectedDay, 'yyyy-MM-dd'))
                   .map((attendance, index) => (
                     <ListItem key={index}>
                       <ListItemText
-                        primary={`Nome: ${attendance.taskName}`}
-                        secondary={`Hora: ${attendance.taskTime} | Status: ${attendance.status} | Notas: ${attendance.taskNotes}`}
+                        primary={`Nome: ${attendance.tarefa}`}
+                        secondary={`Hora: ${attendance.hora} | Status: ${attendance.status} | Notas: ${attendance.descricao}`}
                       />
                           {/* Botão Editar */}
                 <Button
@@ -291,8 +296,8 @@ const handleEdit = (index) => {
               <>
                 <TextField
                   label="Nome do Atendimento"
-                  value={formData.taskName}
-                  onChange={(e) => setFormData({ ...formData, taskName: e.target.value })}
+                  value={formData.tarefa}
+                  onChange={(e) => setFormData({ ...formData, tarefa: e.target.value })}
                   fullWidth
                   required
                   sx={{ marginBottom: 2 }}
@@ -300,8 +305,8 @@ const handleEdit = (index) => {
                 <TextField
                   label="Data"
                   type="date"
-                  value={formData.taskDate}
-                  onChange={(e) => setFormData({ ...formData, taskDate: e.target.value })}
+                  value={formData.data}
+                  onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                   fullWidth
                   required
                   InputLabelProps={{ shrink: true }}
@@ -310,8 +315,8 @@ const handleEdit = (index) => {
                 <TextField
                   label="Horário"
                   type="time"
-                  value={formData.taskTime}
-                  onChange={(e) => setFormData({ ...formData, taskTime: e.target.value })}
+                  value={formData.hora}
+                  onChange={(e) => setFormData({ ...formData, hora: e.target.value })}
                   fullWidth
                   required
                   InputLabelProps={{ shrink: true }}
@@ -319,8 +324,8 @@ const handleEdit = (index) => {
                 />
                 <TextField
                   label="Notas"
-                  value={formData.taskNotes}
-                  onChange={(e) => setFormData({ ...formData, taskNotes: e.target.value })}
+                  value={formData.descricao}
+                  onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                   fullWidth
                   sx={{ marginBottom: 2 }}
                 />
@@ -329,7 +334,7 @@ const handleEdit = (index) => {
                   <Button
                     variant={formData.status === 'Aguardando Confirmação' ? 'contained' : 'outlined'}
                     color="warning"
-                    onClick={() => setFormData({ ...formData, status: 'Aguardando Confirmação' })}
+                    onClick={() => setFormData({ ...formData, status: false })}
                     sx={{ marginRight: 2 }}
                   >
                     Aguardando Confirmação
@@ -337,7 +342,7 @@ const handleEdit = (index) => {
                   <Button
                     variant={formData.status === 'Confirmar Agendamento' ? 'contained' : 'outlined'}
                     color="success"
-                    onClick={() => setFormData({ ...formData, status: 'Confirmar Agendamento' })}
+                    onClick={() => setFormData({ ...formData, status: true })}
                   >
                     Confirmar Agendamento
                   </Button>

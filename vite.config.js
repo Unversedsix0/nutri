@@ -9,7 +9,9 @@ export default defineConfig({
   plugins: [
     react(),
     checker({
-      
+      //eslint: {
+        //lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+      //},
     }),
   ],
   resolve: {
