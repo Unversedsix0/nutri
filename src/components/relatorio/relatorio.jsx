@@ -32,9 +32,7 @@ const Relatorio = () => {
     setPacientes(pacientesAPI);
   };
 
-  useEffect(() => {
-    console.log("Pacientes:", pacientes);
-  }, [pacientes]);
+
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
@@ -42,7 +40,9 @@ const Relatorio = () => {
     // Definindo o conteúdo do PDF
     const pdfContent = `
       Relatório: ${activeTab}
-      Paciente: ${paciente || "Não vinculado"}
+      Paciente: ${paciente.nome || "Não vinculado"}
+      Altura: ${paciente.altura || "Não informado"} m
+      Peso: ${paciente.peso || "Não informado"} kg
       Data: ${data || "Não especificada"}
       Informações:
       ${informacoes || "Nenhuma informação adicionada"}
@@ -51,7 +51,7 @@ const Relatorio = () => {
     doc.text(pdfContent, 10, 10);
 
     // Baixando o PDF gerado
-    doc.save(`${paciente}_relatorio.pdf`);
+    doc.save(`${paciente.nome}_relatorio.pdf`);
   };
 
   return (
@@ -89,7 +89,7 @@ const Relatorio = () => {
                 <em>Selecione um paciente</em>
               </MenuItem>
               {pacientes.map((paciente) => (
-                <MenuItem key={paciente.id} value={paciente.nome}>
+                <MenuItem key={paciente.id} value={paciente}>
                   {paciente.nome}
                 </MenuItem>
               ))}
