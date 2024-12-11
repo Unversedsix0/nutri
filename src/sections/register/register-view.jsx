@@ -200,6 +200,10 @@ export default function RegisterView() {
           imgUrl: "/assets/background/overlay_4.jpg",
         }),
         height: 1,
+        height: '100vh', // Define a altura como 100% da janela
+        width: '100%', // Garante que a largura cubra toda a tela
+        backgroundSize: 'cover', // Ajusta a imagem para cobrir toda a área
+        backgroundPosition: 'center', // Centraliza a imagem
       }}
     >
       <Logo
